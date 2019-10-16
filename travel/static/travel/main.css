@@ -1,0 +1,87 @@
+body {
+    color: #222;
+    background: #fff;
+    margin: 0px;
+    padding: 0px;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.main_content {
+    padding: 0px;
+    margin: 0px;
+}
+
+nav {
+    background-color: #0073b7;
+    padding: 10px;
+    font-size: 20px;
+    color: white;
+    height: 65px;
+}
+
+nav > a {
+    color: white;
+    margin-right: 10px;
+}
+
+.hero {
+    background-color: #0073b7;
+    color: white;
+    font-size: 14px;
+
+    padding: 50px 50px;
+    text-align: left;
+
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.hero a {
+    color: white;
+    text-decoration: underline;
+}
+
+@media (min-width: 800px) {
+    .container{
+        max-width: 800px;
+    }
+}
+
+@media (min-width: 1000px) {
+    .container{
+        max-width: 1000px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .container{
+        max-width: 1200px;
+    }
+}
+
+@media (min-width: 1600px) {
+    .container{
+        max-width: 1400px;
+    }
+}
+
+@media (min-width: 1800px) {
+    .container{
+        max-width: 1600px;
+    }
+}
+
+.error-msg {
+    color: #bf0000;
+    padding: 10px;
+}
+
+

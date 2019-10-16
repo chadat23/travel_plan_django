@@ -1,0 +1,32 @@
+{% extends "travel/_base.html" %}
+{% load static %}
+
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'blog/entry.css' %}"/>
+{% endblock additional_css %}
+
+{% block main_content %}
+
+<div class="hero">
+    <h1>Enter Your Wilderness Travel Plan</h1>
+
+    Notes:
+    <ul>
+        <li>
+            This tool is designed to work with a variety of sized screens (which we certainly have) and at a variety of
+            resolutions (which again, we have). If things are too squished, making the web browser narrower may actually
+            fix the problem.
+        </li>
+        <li>
+            Name, email, and location fields can be either selected from dropdown list by clicking the text box, using
+            the auto-complete after starting to enter a value, or typing in a novel value.
+        </li>
+        <li>
+            For fields who's meanings aren't retaly apparent, hovering your curser over such fields will bring up an
+            elaberating tip or hint.
+        </li>
+    </ul>
+
+</div>
+
+{% endblock main_content %}
