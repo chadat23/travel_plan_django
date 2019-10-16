@@ -11,27 +11,27 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='locations',
+            model_name='location',
             name='is_in_park',
             field=models.BooleanField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='locations',
+            model_name='location',
             name='kind',
             field=models.CharField(blank=True, choices=[('p', 'PEEK'), ('v', 'VALLEY'), ('rvr', 'RIVER'), ('lk', 'LAKE'), ('rdg', 'RIDGE'), ('th', 'TRAIL_HEAD'), ('m', 'MEADOW'), ('o', 'OTHER'), ('cg', 'CAMPGROUND'), ('b', 'BASIN'), ('a', 'AREA')], max_length=3, null=True),
         ),
         migrations.AlterField(
-            model_name='locations',
+            model_name='location',
             name='latitude',
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='locations',
+            model_name='location',
             name='longitude',
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='locations',
+            model_name='location',
             name='note',
             field=models.TextField(blank=True, null=True),
         ),
