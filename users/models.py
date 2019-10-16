@@ -16,4 +16,4 @@ class Profile(models.Model):
     active: bool = models.BooleanField(null=True, blank=True)
 
     def __repr__(self):
-        return f'{self.user.username}'
+        return f'Profile for: {self.user.username}'
