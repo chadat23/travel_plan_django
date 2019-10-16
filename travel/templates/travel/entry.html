@@ -70,6 +70,125 @@
             </div>
         </div>
 
+        <div class="entry-section">
+            <h5>
+                Traveler Info
+            </h5>
+            <div class="row">
+                <datalist id="users">
+                    {% for user in users %}
+                    <option>{{ user.name }}</option>
+                    {% endfor %}
+                </datalist>
+                <datalist id="colors">
+                    {% for color in colors %}
+                    <option>{{ color }}</option>
+                    {% endfor %}
+                </datalist>
+                {% for t in travelers %}
+                    <input type="text" name="travelername{{ forloop.counter0 }}" placeholder="{% if forloop.first %}Trip Leader{% else %}Name{% endif %}" class="col-xl-4"
+                           value="{{ t.traveler_name }}" list="users" {% if forloop.first %}required{% endif %}/>
+                    <input type="text" name="callsign{{ forloop.counter0 }}" placeholder="Call Sign" class="col-xl-2"
+                           value="{{ t.call_sign }}"/>
+                    <input type="text" name="packcolor{{ forloop.counter0 }}" placeholder="Pack Color" class="col-xl-2"
+                           value="{{ t.pack_color }}" list="colors"/>
+                    <input type="text" name="tentcolor{{ forloop.counter0 }}" placeholder="Tent Color" class="col-xl-2"
+                           value="{{ t.tent_color }}" list="colors"/>
+                    <input type="text" name="flycolor{{ forloop.counter0 }}" placeholder="Fly/Tarp Color" class="col-xl-2"
+                           value="{{ t.fly_color }}" list="colors"/>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="entry-section">
+            <h5>
+                Risk Calculation
+            </h5>
+            <div>
+                1 = No Risk, 10 = Extreme Risk
+            </div>
+            <div class="row set-height">
+                <div class="col-sm-1 risk-label">
+                    TM
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Supervision
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Planning
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Contingency Resources
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Communication
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Team Selection
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Team Fitness
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Environment
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Incident Complexity
+                </div>
+                <div class="col-sm-1 risk-label">
+                    Total
+                </div>
+            </div>
+            {% for p in travelers %}
+            <div class="row">
+                <span class="col-sm-1">{{ forloop.counter }}</span>
+                <input type="number" name="supervision{{ forloop.counter0 }}" class="col-sm-1"
+                       value="{{ p.supervision }}"/>
+                <input type="number" name="planning{{ forloop.counter0 }}" class="col-sm-1" value="{{ p.planning }}"/>
+                <input type="number" name="contingency{{ forloop.counter0 }}" class="col-sm-1"
+                       value="{{ p.contingency }}"/>
+                <input type="number" name="comms{{ forloop.counter0 }}" class="col-sm-1" value="{{ p.comms }}"/>
+                <input type="number" name="teamselection{{ forloop.counter0 }}" class="col-sm-1"
+                       value="{{ p.team_selection }}"/>
+                <input type="number" name="fitness{{ forloop.counter0 }}" class="col-sm-1" value="{{ p.fitness }}"/>
+                <input type="number" name="env{{ forloop.counter0 }}" class="col-sm-1" value="{{ p.env }}"/>
+                <input type="number" name="complexity{{ forloop.counter0 }}" class="col-sm-1" value="{{ p.complexity }}"/>
+                <input type="number" name="total{{ forloop.counter0 }}" class="col-sm-1" value="{{ p.total }}"/>
+            </div>
+            {% endfor %}
+{#            <div class="row">#}
+{#                <span class="col-xl-1">Average of Totals</span>#}
+{#                <input type="text" name="garavg" class="col-sm-1" value="{{ gar_avg }}" required/>#}
+{#            </div>#}
+{#            <div>#}
+{#                Discuss as a group how to manage and mitigate these risks and then the reasons.#}
+{#            </div>#}
+{#            <div class="row">#}
+{#                <span class="col-xl-1"></span>#}
+{#                <input type="number" name="mitigatedgar" value="{{ mitigated_gar }}" class="col-sm-1" step="any" required/>#}
+{#            </div>#}
+{#            <div>#}
+{#                Hazards identified and mitigations taken: radio dead spots, river crossings, weather forecasts,#}
+{#                snow/ice, insects/animals, other-specify.#}
+{#            </div>#}
+{#            <div class="row">#}
+{#                <span class="col-xl-1"></span>#}
+{#                <input type="text" placeholder="GAR Mitigation" name="garmitigations" value="{{ gar_mitigations }}"#}
+{#                       class="col-sm-11"/>#}
+{#            </div>#}
+{#            <div>#}
+{#                Additional notes:#}
+{#            </div>#}
+{#            <div class="row">#}
+{#                <span class="col-xl-1"></span>#}
+{#                <input type="text" placeholder="Notes:" name="notes" value="{{ notes }}" class="col-sm-11"/>#}
+{#            </div>#}
+        </div>
+
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
         <button type="submit" class="btn btn-danger">Submit</button>
     </form>
 </div>
