@@ -102,6 +102,31 @@
 
         <div class="entry-section">
             <h5>
+                Day's Plans
+            </h5>
+            <datalist id="mode">
+                <option>Foot</option>
+                <option>Stock</option>
+                <option>Boat</option>
+            </datalist>
+            {% for d in day_plans %}
+                <div class="row">
+                    <input type="date" name="date{{ forloop.counter0 }}" title="Date:" class="col-xl-2 date-input"
+                           value="{{ d.date }}"/>
+                    <input type="text" name="startingpoint{{ forloop.counter0 }}" placeholder="Starting Point:" class="col-xl-3"
+                           value="{{ d.starting_point }}" list="locations"/>
+                    <input type="text" name="endingpoint{{ forloop.counter0 }}" placeholder="Ending Point:" class="col-xl-3"
+                           value="{{ d.ending_point }}" list="locations"/>
+                    <input type="text" name="route{{ forloop.counter0 }}" placeholder="Route:" class="col-xl-3"
+                           value="{{ d.route }}"/>
+                    <input type="text" name="mode{{ forloop.counter0 }}" placeholder="Mode:" class="col-xl-1"
+                           value="{{ d.mode }}" list="mode"/>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="entry-section">
+            <h5>
                 Risk Calculation
             </h5>
             <div>

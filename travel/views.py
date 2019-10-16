@@ -1,13 +1,19 @@
 from datetime import datetime
 from copy import deepcopy
 
+from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import render
-from .models import Location, Travel
+
+from .models import Travel
+from colors.models import Color
+from locations.models import Location
 
 context = {
     'title': 'Travel Plan Entry',
+    'colors': Color.objects.values_list('name', flat=True),
     'locations': Location.objects.values_list('name', flat=True),
+    'users': User.objects.all(),
     'error': '',
     'start_date': '',
     'entry_point': '',
