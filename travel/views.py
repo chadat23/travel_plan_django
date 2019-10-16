@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import render
 
+from users.models import Profile
 from .models import Travel
 from colors.models import Color
 from locations.models import Location
@@ -13,7 +14,7 @@ context = {
     'title': 'Travel Plan Entry',
     'colors': Color.objects.values_list('name', flat=True),
     'locations': Location.objects.values_list('name', flat=True),
-    'users': User.objects.all(),
+    'usernames': User.objects.values_list('username', flat=True),
     'error': '',
     'start_date': '',
     'entry_point': '',
@@ -29,13 +30,21 @@ for i in range(4):
     context['tentcolor' + str(i)] = ''
     context['flycolor' + str(i)] = ''
 
+for i in range(9):
+    context['date' + str(i)] = ''
+    context['startingpoint' + str(i)] = ''
+    context['endingpoint' + str(i)] = ''
+    context['route' + str(i)] = ''
+    context['mode' + str(i)] = ''
+
 
 def entry(request: HttpRequest):
     con = deepcopy(context)
 
     if request.method == 'POST':
         con = _fill_context(request)
-        con = _create_travelers(request, con)
+        con = _fill_travelers(request, con)
+        con = _fill_day_plans(request, con)
 
         _validate(request, con)
         if con.get('error'):
@@ -45,7 +54,8 @@ def entry(request: HttpRequest):
 
         return render(request, 'travel/entry.html', con)
     else:
-        con = _create_travelers(request, con)
+        con = _fill_travelers(request, con)
+        con = _fill_day_plans(request, con)
     return render(request, 'travel/entry.html', con)
 
 
@@ -53,7 +63,28 @@ def search(request: HttpRequest):
     return render(request, 'travel/search.html', context)
 
 
-def _create_travelers(request: HttpRequest, context: dict) -> dict:
+def _fill_day_plans(request: HttpRequest, context: dict) -> dict:
+    context['day_plans'] = []
+    for i in range(9):
+        p = {}
+        if request.method == 'POST':
+            p['date'] = request.POST.get('date' + str(i), '')
+            p['starting_point'] = request.POST.get('startingpoint' + str(i), '')
+            p['ending_point'] = request.POST.get('endingpoint' + str(i), '')
+            p['route'] = request.POST.get('route' + str(i), '')
+            p['mode'] = request.POST.get('mode' + str(i), '')
+        else:
+            p['date'] = ''
+            p['starting_point'] = ''
+            p['ending_point'] = ''
+            p['route'] = ''
+            p['mode'] = ''
+        context['day_plans'].append(p)
+
+    return context
+
+
+def _fill_travelers(request: HttpRequest, context: dict) -> dict:
     context['travelers'] = []
     for i in range(4):
         t = {}
@@ -125,13 +156,6 @@ def _validate_fields(request: HttpRequest, context: dict):
 
 
 def _validate_dates(context: dict):
-    # datetime.strptime(context.get('end_date'), '%Y-%m-%d').date()
-    a = context.get('end_date')
-    b = context.get('start_date')
-    c = datetime.strptime(context.get('end_date'), '%Y-%m-%d')
-    d = datetime.strptime(context.get('start_date'), '%Y-%m-%d')
-    e = datetime.strptime(context.get('end_date'), '%Y-%m-%d') < datetime.strptime(context.get('start_date'), '%Y-%m-%d')
-
     if not (context.get('end_date') and context.get('start_date')
             and datetime.strptime(context.get('end_date'), '%Y-%m-%d') >
             datetime.strptime(context.get('start_date'), '%Y-%m-%d')):
@@ -170,7 +194,7 @@ def _fill_context(request: HttpRequest) -> dict:
     con['tracked'] = request.POST['tracked'] == 'yes'
     con['plb'] = request.POST['plb']
 
-    con = _create_travelers(request, con)
+    con = _fill_travelers(request, con)
 
     return con
 
@@ -185,3 +209,17 @@ def _save_data(context: dict):
     travel.plb = context.get('plb')
 
     travel.save()
+
+    for t in context['travelers']:
+        if not t.get('traveler_name'):
+            break
+        user = User.objects.filter(username=t.get('traveler_name')).first()
+        if not user:
+            user = User()
+            username: str = t.get('traveler_name')
+            user.username = username
+            if ',' in username:
+                names = username.split(', ')
+                user.first_name = names[1]
+                user.last_name = names[0]
+            user.save()

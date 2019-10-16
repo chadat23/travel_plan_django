@@ -75,9 +75,9 @@
                 Traveler Info
             </h5>
             <div class="row">
-                <datalist id="users">
-                    {% for user in users %}
-                    <option>{{ user.name }}</option>
+                <datalist id="usernames">
+                    {% for user in usernames %}
+                    <option>{{ user }}</option>
                     {% endfor %}
                 </datalist>
                 <datalist id="colors">
@@ -87,7 +87,7 @@
                 </datalist>
                 {% for t in travelers %}
                     <input type="text" name="travelername{{ forloop.counter0 }}" placeholder="{% if forloop.first %}Trip Leader{% else %}Name{% endif %}" class="col-xl-4"
-                           value="{{ t.traveler_name }}" list="users" {% if forloop.first %}required{% endif %}/>
+                           value="{{ t.traveler_name }}" list="usernames" {% if forloop.first %}required{% endif %}/>
                     <input type="text" name="callsign{{ forloop.counter0 }}" placeholder="Call Sign" class="col-xl-2"
                            value="{{ t.call_sign }}"/>
                     <input type="text" name="packcolor{{ forloop.counter0 }}" placeholder="Pack Color" class="col-xl-2"
