@@ -26,7 +26,53 @@
             elaberating tip or hint.
         </li>
     </ul>
+</div>
+<div class="container">
+    <form action="" method="POST" enctype=multipart/form-data>
+        {% csrf_token %}
+        <div class="entry-section">
+            <h5>
+                Trip Info
+            </h5>
+            <div class="row">
+                <div class="row col-lg-5">
+                    <datalist id="locations">
+                        {% for loc in locations %}
+                        <option>{{ loc }}</option>
+                        {% endfor %}
+                    </datalist>
+                    <div class="col-xl-2">Entry:</div>
+                    <input type="date" name="startdate" title="Entry Date" class="col-xl-3 date-input"
+                            value="{{ start_date }}" required/>
+                    <input type="text" name="entrypoint" placeholder="Entry Location" class="col-xl-7 text-input"
+                            value="{{ entry_point }}" list="locations" required/>
+                </div>
+                <div class="row col-lg-5">
+                    <div class="col-xl-2">Exit:</div>
+                    <input type="date" name="enddate" title="Exit Date" class="col-xl-3 date-input" value="{{ end_date }}"
+                            required/>
+                    <input type="text" name="exitpoint" placeholder="Exit Location" class="col-xl-7"
+                            value="{{ exit_point }}" list="locations" required/>
+                </div>
+                <div class="row col-lg-2">
+                    <div class="col-xl-7" title="Will you be tracked by dispatch?">
+                        <label class="radio-inline">
+                            <input type="radio" name="tracked" id="tracked1" value="yes" {% if tracked %}checked{% else %}{% endif %} required>
+                            Yes
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="tracked" id="tracked2" value="no" {% if not tracked %}checked{% else
+                                    %}{% endif %} required>
+                            No
+                        </label>
+                    </div>
+                    <input type="text" name="plb" placeholder="PLB #" class="col-xl-5" value="{{ plb }}"/>
+                </div>
+            </div>
+        </div>
 
+        <button type="submit" class="btn btn-danger">Submit</button>
+    </form>
 </div>
 
 {% endblock main_content %}

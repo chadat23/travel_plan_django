@@ -6,32 +6,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('location', '0001_initial'),
+        ('locations', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='location',
+            model_name='locations',
             name='is_in_park',
             field=models.BooleanField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='location',
+            model_name='locations',
             name='kind',
             field=models.CharField(blank=True, choices=[('p', 'PEEK'), ('v', 'VALLEY'), ('rvr', 'RIVER'), ('lk', 'LAKE'), ('rdg', 'RIDGE'), ('th', 'TRAIL_HEAD'), ('m', 'MEADOW'), ('o', 'OTHER'), ('cg', 'CAMPGROUND'), ('b', 'BASIN'), ('a', 'AREA')], max_length=3, null=True),
         ),
         migrations.AlterField(
-            model_name='location',
+            model_name='locations',
             name='latitude',
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='location',
+            model_name='locations',
             name='longitude',
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='location',
+            model_name='locations',
             name='note',
             field=models.TextField(blank=True, null=True),
         ),
