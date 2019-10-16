@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from .models import Travel
 
 
 def entry(request):
@@ -9,4 +10,8 @@ def entry(request):
 
 
 def search(request):
-    return render(request, 'travel/search.html', {'title': 'maybe?'})
+    context = {
+        'title': 'Search',
+        'travels': Travel.objects.all()
+    }
+    return render(request, 'travel/search.html', context)

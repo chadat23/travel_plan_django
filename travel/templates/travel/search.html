@@ -2,6 +2,17 @@
 
 {% block main_content %}
 
-    <h1>Some day!!! Some day...</h1>
+    {% for travel in travels %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ travel.trip_leader.username }}</a>
+              <small class="text-muted">{{ travel.created_date|date:"F d, Y" }}</small>
+            </div>
+            <h2><a class="article-title" href="#">{{ travel.plb }}</a></h2>
+            <p class="article-content">{{ travel.last_edited_date }}</p>
+          </div>
+        </article>
+    {% endfor %}
 
 {% endblock main_content %}
