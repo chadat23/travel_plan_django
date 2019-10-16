@@ -7,6 +7,7 @@ from .models import Location, Travel
 
 context = {
     'title': 'Travel Plan Entry',
+    'locations': Location.objects.values_list('name', flat=True),
     'start_date': '',
     'entry_point': '',
     'end_date': '',
@@ -42,10 +43,10 @@ def _fill_context(request: HttpRequest) -> dict:
 
 def _save_data(context: dict):
     travel = Travel()
-    travel.start_date = datetime.strptime(context.get('start_date'), '%Y-%m-%d')
-    travel.entry_point = Location.objects.filter(Location.name == context.get('entry_point'))
-    travel.end_date = context.get('end_date')
-    travel.exit_point = context.get('exit_point')
+    travel.start_date = datetime.strptime(context.get('start_date'), '%Y-%m-%d').date()
+    travel.entry_point = Location.objects.filter(name=context.get('entry_point')).first()
+    travel.end_date = datetime.strptime(context.get('end_date'), '%Y-%m-%d').date()
+    travel.exit_point = Location.objects.filter(name=context.get('exit_point')).first()
     travel.tracked = context.get('tracked')
     travel.plb = context.get('plb')
 
