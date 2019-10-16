@@ -50,6 +50,7 @@ class Location(models.Model):
     longitude: float = models.FloatField(null=True, blank=True)
     kind: enum.Enum = models.CharField(max_length=3, choices=KindEnum.KIND_CHOICES, null=True, blank=True)
     is_in_park: bool = models.BooleanField(null=True, blank=True)
+    active: bool = models.BooleanField(null=True, blank=True)
     # aliases: int = db.relationship('Location', secondary=location_association_table,
     #                                primaryjoin=id == location_association_table.c.location_1_id,
     #                                secondaryjoin=id == location_association_table.c.location_1_id,
