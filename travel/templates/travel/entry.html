@@ -86,6 +86,7 @@
                     {% endfor %}
                 </datalist>
                 {% for t in travelers %}
+{#                  TODO: assumes that the trip leader is first #}
                     <input type="text" name="travelername{{ forloop.counter0 }}" placeholder="{% if forloop.first %}Trip Leader{% else %}Name{% endif %}" class="col-xl-4"
                            value="{{ t.traveler_name }}" list="usernames" {% if forloop.first %}required{% endif %}/>
                     <input type="text" name="callsign{{ forloop.counter0 }}" placeholder="Call Sign" class="col-xl-2"
@@ -123,6 +124,32 @@
                            value="{{ d.mode }}" list="mode"/>
                 </div>
             {% endfor %}
+        </div>
+
+        <div class="entry-section">
+            <h5>
+                Vehicle Info
+            </h5>
+            <div>
+                Note: if you select a vehicle from the License Plate dropdown (as apposed to entering something new such as your personal vehicle) then you don't need to fill out the Make, Model, or Color fields.
+            </div>
+            <div class="row">
+                <datalist id="vehicles">
+                    {% for vehicle in vehicles %}
+                    <option>{{ vehicle }}</option>
+                    {% endfor %}
+                </datalist>
+                <input type="text" name="vehicleplate" placeholder="License Plate" class="col-xl-4" value="{{ vehicle_plate }}"
+                       list="vehicles">
+                <input type="text" name="vehiclemake" placeholder="Make" class="col-xl-3" value="{{ vehicle_make }}">
+                <input type="text" name="vehiclemodel" placeholder="Model" class="col-xl-3" value="{{ vehicle_model }}">
+                <input type="text" name="vehiclecolor" placeholder="Color" class="col-xl-2" value="{{ vehicle_color }}"
+                       list="colors">
+            </div>
+            <row>
+                <input type="text" name="vehiclelocation" placeholder="vehicle Location" class="col-xl-6"
+                       value="{{ vehicle_location }}">
+            </row>
         </div>
 
         <div class="entry-section">

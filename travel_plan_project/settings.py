@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'locations.apps.LocationConfig',
     'travel.apps.TravelConfig',
     'users.apps.UsersConfig',
+    'vehicles.apps.VehiclesConfig',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',

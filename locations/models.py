@@ -62,3 +62,6 @@ class Location(models.Model):
 
     def __repr__(self):
         return f'{self.name}: {self.latitude}, {self.longitude}'
+
+    def __str__(self):
+        return f'{self.name}: {self.latitude}, {self.longitude}'

@@ -3,7 +3,9 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
+from colors.models import Color
 from locations.models import Location
+from vehicles.models import Vehicle
 
 
 class Travel(models.Model):
@@ -21,16 +23,40 @@ class Travel(models.Model):
 
     trip_leader: User = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
+    vehicle: Vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
+    vehicle_location = models.CharField(max_length=50, null=True, blank=True)
+
     note: str = models.TextField(null=True, blank=True)
 
 
-
-
-
-class DayPlan(models.Model):
+class TravelUserUnit(models.Model):
     created_date: datetime = models.DateField(auto_now_add=True)
 
-    datetime: datetime = models.DateField(null=True, blank=True)
+    traveler: User = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    travel: Travel = models.ForeignKey(Travel, on_delete=models.CASCADE, null=True, blank=True)
+
+    pack_color: Color = models.ForeignKey(Color, on_delete=models.CASCADE,
+                                          related_name='pack_color', null=True, blank=True)
+    tent_color: Color = models.ForeignKey(Color, on_delete=models.CASCADE,
+                                          related_name='tent_color', null=True, blank=True)
+    fly_color: Color = models.ForeignKey(Color, on_delete=models.CASCADE,
+                                         related_name='fly_color', null=True, blank=True)
+
+    supervision: int = models.IntegerField(null= True, blank=True)
+    planning: int = models.IntegerField(null= True, blank=True)
+    contingency: int = models.IntegerField(null= True, blank=True)
+    comms: int = models.IntegerField(null= True, blank=True)
+    team_selection: int = models.IntegerField(null= True, blank=True)
+    fitness: int = models.IntegerField(null= True, blank=True)
+    env: int = models.IntegerField(null= True, blank=True)
+    complexity: int = models.IntegerField(null= True, blank=True)
+    total: int = models.IntegerField(null= True, blank=True)
+
+
+class TravelDayPlan(models.Model):
+    created_date: datetime = models.DateField(auto_now_add=True)
+
+    date: datetime = models.DateField(null=True, blank=True)
     starting_point: Location = models.ForeignKey(Location, on_delete=models.CASCADE,
                                                  related_name='starting_point', null=True, blank=True)
     ending_point: Location = models.ForeignKey(Location, on_delete=models.CASCADE,
@@ -44,4 +70,7 @@ class DayPlan(models.Model):
         return self.date < other.date
 
     def __repr__(self):
+        return f'{str(self.date)} {self.starting_point} {self.ending_point} {self.route} {self.mode}'
+
+    def __str__(self):
         return f'{str(self.date)} {self.starting_point} {self.ending_point} {self.route} {self.mode}'

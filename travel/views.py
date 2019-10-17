@@ -1,26 +1,36 @@
 from datetime import datetime
 from copy import deepcopy
+from typing import Optional
 
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import render
 
-from users.models import Profile
-from .models import Travel
+from .models import Travel, TravelUserUnit, TravelDayPlan
 from colors.models import Color
+from colors import services as color_services
 from locations.models import Location
+from users import services as user_services
+from vehicles.models import Vehicle
+from vehicles import services as vehicle_services
 
 context = {
     'title': 'Travel Plan Entry',
-    'colors': Color.objects.values_list('name', flat=True),
-    'locations': Location.objects.values_list('name', flat=True),
-    'usernames': User.objects.values_list('username', flat=True),
+    'colors': Color.objects.order_by('name').values_list('name', flat=True),
+    'locations': Location.objects.order_by('name').values_list('name', flat=True),
+    'usernames': User.objects.order_by('-username').filter(profile__active=True).values_list('username', flat=True),
+    'vehicles': [str(v) for v in Vehicle.objects.order_by('plate').filter(active=True).all()],
     'error': '',
     'start_date': '',
     'entry_point': '',
     'end_date': '',
     'exit_point': '',
     'tracked': True,
+    'vehicle_plate': '',
+    'vehicle_make': '',
+    'vehicle_model': '',
+    'vehicle_color': '',
+    'vehicle_location': '',
 }
 
 for i in range(4):
@@ -161,16 +171,16 @@ def _validate_dates(context: dict):
             datetime.strptime(context.get('start_date'), '%Y-%m-%d')):
         context['error'] = "Your exit date can't be before your entry date."
 
-    # if self.start_date != self.day_plans[0]['date']:
-    #     self.error = "Your days' plans should start on your entry date. " \
-    #                  "The two dates don't match. You have days that are unaccounted for."
-    #
-    # for plan in reversed(self.day_plans):
-    #     if plan['date'] != '':
-    #         if self.end_date != plan['date']:
-    #             self.error = "Your days' plans should end on your exit date. " \
-    #                          "The two dates don't match. You have days that are unaccounted for."
-    #         break
+    if context.get('start_date') != context.get('day_plans')[0]['date']:
+        context['error'] = "Your days' plans should start on your entry date. " \
+                           "The two dates don't match. You have days that are unaccounted for."
+
+    for plan in reversed(context.get('day_plans')):
+        if plan['date'] != '':
+            if context.get('end_date') != plan['date']:
+                context['error'] = "Your days' plans should end on your exit date. " \
+                                   "The two dates don't match. You have days that are unaccounted for."
+            break
 
     return context
 
@@ -187,14 +197,20 @@ def _validate_contacts(context: dict):
 
 def _fill_context(request: HttpRequest) -> dict:
     con = deepcopy(context)
-    con['start_date'] = request.POST['startdate']
-    con['entry_point'] = request.POST['entrypoint']
-    con['end_date'] = request.POST['enddate']
-    con['exit_point'] = request.POST['exitpoint']
-    con['tracked'] = request.POST['tracked'] == 'yes'
-    con['plb'] = request.POST['plb']
+    con['start_date'] = request.POST.get('startdate', '')
+    con['entry_point'] = request.POST.get('entrypoint', '')
+    con['end_date'] = request.POST.get('enddate', '')
+    con['exit_point'] = request.POST.get('exitpoint', '')
+    con['tracked'] = request.POST.get('tracked', '') == 'yes'
+    con['plb'] = request.POST.get('plb', '')
 
-    con = _fill_travelers(request, con)
+    # con = _fill_travelers(request, con)
+
+    con['vehicle_plate'] = request.POST.get('vehicleplate', '')
+    con['vehicle_make'] = request.POST.get('vehiclemake', '')
+    con['vehicle_model'] = request.POST.get('vehiclemodel', '')
+    con['vehicle_color'] = request.POST.get('vehiclecolor', '')
+    con['vehicle_location'] = request.POST.get('vehiclelocation', '')
 
     return con
 
@@ -208,18 +224,61 @@ def _save_data(context: dict):
     travel.tracked = context.get('tracked')
     travel.plb = context.get('plb')
 
+    user = user_services.add_if_not_present(username=context.get('travelers')[0]['traveler_name'])
+    travel.trip_leader = User.objects.filter(username=user.username).first()
+
+    travel.vehicle = vehicle_services.add_if_not_present(context.get('vehicle_plate').split(' ')[0],
+                                                         context.get('vehicle_make'), context.get('vehicle_model'),
+                                                         context.get('vehicle_color'), active=False)
+    travel.vehicle_location = context.get('vehicle_location')
+
     travel.save()
 
     for t in context['travelers']:
         if not t.get('traveler_name'):
             break
-        user = User.objects.filter(username=t.get('traveler_name')).first()
-        if not user:
-            user = User()
-            username: str = t.get('traveler_name')
-            user.username = username
-            if ',' in username:
-                names = username.split(', ')
-                user.first_name = names[1]
-                user.last_name = names[0]
-            user.save()
+        user = user_services.add_if_not_present(username=t.get('traveler_name'))
+        user_services.save_profile(user, call_sign=t.get('call_sign'))
+
+        travel_user_unit = TravelUserUnit()
+        travel_user_unit.traveler = user
+        travel_user_unit.travel = travel
+
+        color = color_services.add_if_not_present(t.get('pack_color'))
+        travel_user_unit.pack_color = Color.objects.filter(name=color).first()
+        color = color_services.add_if_not_present(t.get('tent_color'))
+        travel_user_unit.tent_color = Color.objects.filter(name=color).first()
+        color = color_services.add_if_not_present(t.get('fly_color'))
+        travel_user_unit.fly_color = Color.objects.filter(name=color).first()
+
+        travel_user_unit.supervision = _optional_int(t.get('supervision'))
+        travel_user_unit.planning = _optional_int(t.get('planning'))
+        travel_user_unit.contingency = _optional_int(t.get('contingency'))
+        travel_user_unit.comms = _optional_int(t.get('comms'))
+        travel_user_unit.team_selection = _optional_int(t.get('team_selection'))
+        travel_user_unit.fitness = _optional_int(t.get('fitness'))
+        travel_user_unit.env = _optional_int(t.get('env'))
+        travel_user_unit.complexity = _optional_int(t.get('complexity'))
+        travel_user_unit.total = _optional_int(t.get('total'))
+
+        travel_user_unit.save()
+
+    for d in context['day_plans']:
+        if not d.get('date'):
+            break
+        day_plan = TravelDayPlan()
+        day_plan.travel = travel
+        day_plan.date = datetime.strptime(d.get('date'), '%Y-%m-%d')
+        day_plan.starting_point = Location.objects.filter(name=d.get('starting_point')).first()
+        day_plan.ending_point = Location.objects.filter(name=d.get('ending_point')).first()
+        day_plan.route = d.get('route')
+        day_plan.mode = d.get('mode')
+
+        day_plan.save()
+
+
+def _optional_int(numb: str) -> Optional[int]:
+    try:
+        return int(numb)
+    except:
+        return
