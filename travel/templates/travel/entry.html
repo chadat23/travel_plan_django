@@ -328,14 +328,14 @@
             {% endfor %}
             <div class="row"> 
                 <span class="col-xl-1">Average of Totals</span> 
-                <input type="text" name="garavg" class="col-sm-1" value="{{ gar_avg }}" required/> 
+                <input type="text" name="garaverage" class="col-sm-1" value="{{ gar_average }}" required/> 
             </div> 
             <div> 
                 Discuss as a group how to manage and mitigate these risks and then the reasons. 
             </div> 
             <div class="row"> 
                 <span class="col-xl-1"></span> 
-                <input type="number" name="mitigatedgar" value="{{ mitigated_gar }}" class="col-sm-1" step="any" required/> 
+                <input type="number" name="garmitigated" value="{{ gar_mitigated }}" class="col-sm-1" required/> 
             </div> 
             <div> 
                 Hazards identified and mitigations taken: radio dead spots, river crossings, weather forecasts, 
@@ -343,7 +343,7 @@
             </div> 
             <div class="row"> 
                 <span class="col-xl-1"></span> 
-                <input type="text" placeholder="GAR Mitigation" name="garmitigations" value="{{ gar_mitigations }}" 
+                <input type="text" placeholder="GAR Mitigations" name="garmitigations" value="{{ gar_mitigations }}" 
                        class="col-sm-11"/> 
             </div> 
             <div> 

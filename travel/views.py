@@ -249,6 +249,11 @@ def _fill_context(request: HttpRequest) -> dict:
     con['cell_number'] = request.POST.get('cellnumber')
     con['satellite_number'] = request.POST.get('satellitenumber')
 
+    con['gar_average'] = request.POST.get('garaverage', '')
+    con['gar_mitigated'] = request.POST.get('garmitigated', '')
+    con['gar_mitigations'] = request.POST.get('garmitigations')
+    con['notes'] = request.POST.get('notes')
+
     return con
 
 
@@ -297,6 +302,11 @@ def _save_data(context: dict):
     travel.off_trail_travel = context.get('off_trail_travel')
     travel.cell_number = context.get('cell_number')
     travel.satellite_number = context.get('satellite_number')
+
+    travel.gar_average = _optional_int(context.get('gar_average'))
+    travel.gar_mitigated = _optional_int(context.get('gar_mitigated'))
+    travel.gar_mitigations = context.get('gar_mitigations')
+    travel.notes = context.get('notes')
 
     travel.save()
 
@@ -354,6 +364,9 @@ def _save_data(context: dict):
 
 
 def _optional_int(numb: str) -> Optional[int]:
+    if not numb:
+        return
+
     try:
         return int(numb)
     except:

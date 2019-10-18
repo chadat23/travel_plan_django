@@ -55,7 +55,10 @@ class Travel(models.Model):
     cell_number: str = models.CharField(max_length=20, null=True, blank=True)
     satellite_number: str = models.CharField(max_length=20, null=True, blank=True)
 
-    note: str = models.TextField(null=True, blank=True)
+    gar_average: int = models.IntegerField(null=True, blank=True)
+    gar_mitigated: int = models.IntegerField(null=True, blank=True)
+    gar_mitigations: str = models.TextField(null=True, blank=True)
+    notes: str = models.TextField(null=True, blank=True)
 
 
 class TravelUserUnit(models.Model):
