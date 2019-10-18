@@ -242,32 +242,31 @@
                     <label for="whistle" class="form-check-label">Whistle</label>
                 </div>
             </div>
-
-{#            <input type="number" name="daysoffood" placeholder="Days Worth of Food" class="col-xl-6"#}
-{#                   value="{{ days_of_food }}" step="any" required>#}
-{#            <input type="text" name="weapon" placeholder="Weapon?" class="col-xl-6" value="{{ weapon }}"/>#}
-{#            <input type="text" name="radiomonitortime" placeholder="Time You Monitor Radio" class="col-xl-6"#}
-{#                   value="{{ radio_monitor_time }}"/>#}
-{#            <div class="col-xl-7" title="Off trail map included?">#}
-{#                Off-trail travel?#}
-{#                <label class="radio-inline">#}
-{#                    <input type="radio" name="offtrailtravel" id="offtrail1" value="yes" {% if off_trail_travel %}checked{% else %}{% endif %}>#}
-{#                    Yes#}
-{#                </label>#}
-{#                <label class="radio-inline">#}
-{#                    <input type="radio" name="offtrailtravel" id="offtrail2" value="no" {% if not off_trail_travel %}checked{% else %}{% endif %}>#}
-{#                    No#}
-{#                </label>#}
-{#<!--                <input type="file" name="offtrailtravelmapfile">-->#}
-{#            </div>#}
-{#            <div class="custom-file">#}
-{#                <label for="fileupload">Select a file showing your off trail travel if doing so.</label>#}
-{#<!--                <input type="file" name="fileupload" value="fileupload" id="fileupload">-->#}
-{#                <input type="file" name="fileupload" value="{{ fileupload }}" id="fileupload" multiple>#}
-{#            </div>#}
-{#            <input type="text" name="cellnumber" placeholder="Cell phone #" class="col-xl-6" value="{{ cell_number }}"/>#}
-{#            <input type="text" name="satellitenumber" placeholder="Satellite Phone #" class="col-xl-6"#}
-{#                   value="{{ satellite_number }}"/>#}
+            <input type="number" name="daysoffood" placeholder="Days Worth of Food" class="col-xl-6"
+                   value="{{ days_of_food }}" step="any" required>
+            <input type="text" name="weapon" placeholder="Weapon?" class="col-xl-6" value="{{ weapon }}"/>
+            <input type="text" name="radiomonitortime" placeholder="Time You Monitor Radio" class="col-xl-6"
+                   value="{{ radio_monitor_time }}"/>
+            <div class="col-xl-7" title="Off trail map included?">
+                Off-trail travel?
+                <label class="radio-inline">
+                    <input type="radio" name="offtrailtravel" id="offtrail1" value="yes" {% if off_trail_travel %}checked{% else %}{% endif %}>
+                    Yes
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="offtrailtravel" id="offtrail2" value="no" {% if not off_trail_travel %}checked{% else %}{% endif %}>
+                    No
+                </label>
+<!--                <input type="file" name="offtrailtravelmapfile">-->
+            </div>
+            <div class="custom-file">
+                <label for="fileupload">Select a file showing your off trail travel if doing so.</label>
+<!--                <input type="file" name="fileupload" value="fileupload" id="fileupload">-->
+                <input type="file" name="fileupload" value="{{ fileupload }}" id="fileupload" multiple>
+            </div>
+            <input type="text" name="cellnumber" placeholder="Cell phone #" class="col-xl-6" value="{{ cell_number }}"/>
+            <input type="text" name="satellitenumber" placeholder="Satellite Phone #" class="col-xl-6"
+                   value="{{ satellite_number }}"/>
         </div>
 
 

@@ -10,6 +10,7 @@ from .models import Travel, TravelUserUnit, TravelDayPlan
 from colors.models import Color
 from colors import services as color_services
 from locations.models import Location
+from travel_utils import file_utils
 from users import services as user_services
 from vehicles.models import Vehicle
 from vehicles import services as vehicle_services
@@ -234,6 +235,14 @@ def _fill_context(request: HttpRequest) -> dict:
     con['tent'] = request.POST.get('tent', '') == 'on'
     con['whistle'] = request.POST.get('whistle', '') == 'on'
 
+    con['days_of_food'] = request.POST.get('daysoffood')
+    con['weapon'] = request.POST.get('weapon')
+    con['radio_monitor_time'] = request.POST.get('radiomonitortime')
+    con['off_trail_travel'] = request.POST.get('offtrailtravel') == 'yes'
+    con['uploaded_files'] = request.FILES.get('fileupload')
+    con['cell_number'] = request.POST.get('cellnumber')
+    con['satellite_number'] = request.POST.get('satellitenumber')
+
     return con
 
 
@@ -275,6 +284,13 @@ def _save_data(context: dict):
     travel.spare_battery = context.get('spare_battery')
     travel.tent = context.get('tent')
     travel.whistle = context.get('whistle')
+
+    travel.days_of_food = context.get('days_of_food')
+    travel.weapon = context.get('weapon')
+    travel.radio_monitor_time = context.get('radio_monitor_time')
+    travel.off_trail_travel = context.get('off_trail_travel')
+    travel.cell_number = context.get('cell_number')
+    travel.satellite_number = context.get('satellite_number')
 
     travel.save()
 
@@ -319,6 +335,14 @@ def _save_data(context: dict):
         day_plan.mode = d.get('mode')
 
         day_plan.save()
+
+    # TODO: working on saving files!!!
+    if context['uploaded_files']:
+        files = file_utils.save_files_with_attributes(context['uploaded_files'],
+                                                      travel.trip_leader.username,
+                                                      travel.start_date.strftime('%Y%m%d'))
+    else:
+        files = []
 
 
 def _optional_int(numb: str) -> Optional[int]:
