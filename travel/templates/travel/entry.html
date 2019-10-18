@@ -326,33 +326,33 @@
                 <input type="number" name="total{{ forloop.counter0 }}" class="col-sm-1" value="{{ p.total }}"/>
             </div>
             {% endfor %}
-{#            <div class="row">#}
-{#                <span class="col-xl-1">Average of Totals</span>#}
-{#                <input type="text" name="garavg" class="col-sm-1" value="{{ gar_avg }}" required/>#}
-{#            </div>#}
-{#            <div>#}
-{#                Discuss as a group how to manage and mitigate these risks and then the reasons.#}
-{#            </div>#}
-{#            <div class="row">#}
-{#                <span class="col-xl-1"></span>#}
-{#                <input type="number" name="mitigatedgar" value="{{ mitigated_gar }}" class="col-sm-1" step="any" required/>#}
-{#            </div>#}
-{#            <div>#}
-{#                Hazards identified and mitigations taken: radio dead spots, river crossings, weather forecasts,#}
-{#                snow/ice, insects/animals, other-specify.#}
-{#            </div>#}
-{#            <div class="row">#}
-{#                <span class="col-xl-1"></span>#}
-{#                <input type="text" placeholder="GAR Mitigation" name="garmitigations" value="{{ gar_mitigations }}"#}
-{#                       class="col-sm-11"/>#}
-{#            </div>#}
-{#            <div>#}
-{#                Additional notes:#}
-{#            </div>#}
-{#            <div class="row">#}
-{#                <span class="col-xl-1"></span>#}
-{#                <input type="text" placeholder="Notes:" name="notes" value="{{ notes }}" class="col-sm-11"/>#}
-{#            </div>#}
+            <div class="row"> 
+                <span class="col-xl-1">Average of Totals</span> 
+                <input type="text" name="garavg" class="col-sm-1" value="{{ gar_avg }}" required/> 
+            </div> 
+            <div> 
+                Discuss as a group how to manage and mitigate these risks and then the reasons. 
+            </div> 
+            <div class="row"> 
+                <span class="col-xl-1"></span> 
+                <input type="number" name="mitigatedgar" value="{{ mitigated_gar }}" class="col-sm-1" step="any" required/> 
+            </div> 
+            <div> 
+                Hazards identified and mitigations taken: radio dead spots, river crossings, weather forecasts, 
+                snow/ice, insects/animals, other-specify. 
+            </div> 
+            <div class="row"> 
+                <span class="col-xl-1"></span> 
+                <input type="text" placeholder="GAR Mitigation" name="garmitigations" value="{{ gar_mitigations }}" 
+                       class="col-sm-11"/> 
+            </div> 
+            <div> 
+                Additional notes: 
+            </div> 
+            <div class="row"> 
+                <span class="col-xl-1"></span> 
+                <input type="text" placeholder="Notes:" name="notes" value="{{ notes }}" class="col-sm-11"/> 
+            </div> 
         </div>
 
         {% if error %}

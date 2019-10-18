@@ -2,11 +2,21 @@ import os
 from typing import List
 
 
-def save_files_with_attributes(files, name: str, start_date: str):
+def save_files_with_attributes(files, path: str, folder: str, name: str, start_date: str):
+    print('in save thing')
     name = _generate_name(name, start_date)
 
+    if folder:
+        path = os.path.join(path, folder)
 
-def _save_files_with_name(files, name: str, path: str) -> List[str]:
+    os.makedirs(path, exist_ok=True)
+
+    return _save_files_with_name(files, path, name)
+
+    
+
+
+def _save_files_with_name(files, path: str, name: str) -> List[str]:
     """
     Renames and saves files so that they're all named the same short of a suffix number
 
@@ -16,16 +26,22 @@ def _save_files_with_name(files, name: str, path: str) -> List[str]:
     :type name: str
     :param path: the path to the folder where the files are to be saved
     :type path: str
-    :return: a List[str] of file names. The names aren't absolute.
+    :return: a List[str] of file names. The names aren't absolute, the path isn't included.
     :rtype: List[str]
     """
 
     file_names = []
-    for i, file in enumerate(files):
-        ext = os.path.splitext(file.filename)[1]
+
+    for i, f in enumerate(files):
+        ext = os.path.splitext(f.name)[1]
+        print(ext, 'ext')
+        print(dir(f))
+        print(f.__dict__)
         file_name = f'{name}_{i + 1}{ext}'
         full_path = os.path.join(path, file_name)
-        file.save(full_path)
+        with open(full_path, 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
         file_names.append(file_name)
 
     return file_names
@@ -42,6 +58,6 @@ def _generate_name(name: str, start_date: str) -> str:
     :return: a str with the name
     :rtype: str
     """
-    return name.strip().replace(' ', '_').replace(',', '') \
+    return start_date.replace('-', '') \
            + '_' \
-           + start_date.replace('-', '')
+           + name.strip().replace(' ', '_').replace(',', '')

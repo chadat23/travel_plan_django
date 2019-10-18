@@ -2,6 +2,7 @@ from datetime import datetime
 from copy import deepcopy
 from typing import Optional
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import render
@@ -33,6 +34,7 @@ try:
         'vehicle_model': '',
         'vehicle_color': '',
         'vehicle_location': '',
+        'off_trail_travel': True,
     }
 
     for i in range(4):
@@ -242,7 +244,8 @@ def _fill_context(request: HttpRequest) -> dict:
     con['weapon'] = request.POST.get('weapon')
     con['radio_monitor_time'] = request.POST.get('radiomonitortime')
     con['off_trail_travel'] = request.POST.get('offtrailtravel') == 'yes'
-    con['uploaded_files'] = request.FILES.get('fileupload')
+    con['uploaded_files'] = request.FILES.getlist('fileupload')
+    # con['uploaded_files'] = request.FILES
     con['cell_number'] = request.POST.get('cellnumber')
     con['satellite_number'] = request.POST.get('satellitenumber')
 
@@ -342,6 +345,8 @@ def _save_data(context: dict):
     # TODO: working on saving files!!!
     if context['uploaded_files']:
         files = file_utils.save_files_with_attributes(context['uploaded_files'],
+                                                      settings.MEDIA_ROOT,
+                                                      'travel_files',
                                                       travel.trip_leader.username,
                                                       travel.start_date.strftime('%Y%m%d'))
     else:
