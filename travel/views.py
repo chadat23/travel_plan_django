@@ -15,38 +15,41 @@ from users import services as user_services
 from vehicles.models import Vehicle
 from vehicles import services as vehicle_services
 
-context = {
-    'title': 'Travel Plan Entry',
-    'colors': Color.objects.order_by('name').values_list('name', flat=True),
-    'locations': Location.objects.order_by('name').values_list('name', flat=True),
-    'usernames': User.objects.order_by('-username').filter(profile__active=True).values_list('username', flat=True),
-    'vehicles': [str(v) for v in Vehicle.objects.order_by('plate').filter(active=True).all()],
-    'error': '',
-    'start_date': '',
-    'entry_point': '',
-    'end_date': '',
-    'exit_point': '',
-    'tracked': True,
-    'vehicle_plate': '',
-    'vehicle_make': '',
-    'vehicle_model': '',
-    'vehicle_color': '',
-    'vehicle_location': '',
-}
+try:
+    context = {
+        'title': 'Travel Plan Entry',
+        'colors': Color.objects.order_by('name').values_list('name', flat=True),
+        'locations': Location.objects.order_by('name').values_list('name', flat=True),
+        'usernames': User.objects.order_by('-username').filter(profile__active=True).values_list('username', flat=True),
+        'vehicles': [str(v) for v in Vehicle.objects.order_by('plate').filter(active=True).all()],
+        'error': '',
+        'start_date': '',
+        'entry_point': '',
+        'end_date': '',
+        'exit_point': '',
+        'tracked': True,
+        'vehicle_plate': '',
+        'vehicle_make': '',
+        'vehicle_model': '',
+        'vehicle_color': '',
+        'vehicle_location': '',
+    }
 
-for i in range(4):
-    context['travelername' + str(i)] = ''
-    context['callsign' + str(i)] = ''
-    context['packcolor' + str(i)] = ''
-    context['tentcolor' + str(i)] = ''
-    context['flycolor' + str(i)] = ''
+    for i in range(4):
+        context['travelername' + str(i)] = ''
+        context['callsign' + str(i)] = ''
+        context['packcolor' + str(i)] = ''
+        context['tentcolor' + str(i)] = ''
+        context['flycolor' + str(i)] = ''
 
-for i in range(9):
-    context['date' + str(i)] = ''
-    context['startingpoint' + str(i)] = ''
-    context['endingpoint' + str(i)] = ''
-    context['route' + str(i)] = ''
-    context['mode' + str(i)] = ''
+    for i in range(9):
+        context['date' + str(i)] = ''
+        context['startingpoint' + str(i)] = ''
+        context['endingpoint' + str(i)] = ''
+        context['route' + str(i)] = ''
+        context['mode' + str(i)] = ''
+except:
+    pass
 
 
 def entry(request: HttpRequest):
