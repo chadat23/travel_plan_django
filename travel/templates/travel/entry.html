@@ -269,6 +269,41 @@
                    value="{{ satellite_number }}"/>
         </div>
 
+        <div class="entry-section">
+            <h5>
+                Responsible Party Selection
+            </h5>
+            <div>
+                Note:
+                    <ul>
+                        <li>
+                            If the RP's name and email is on file, their on-file email address will be used even if something else is entered below.
+                        </li>
+                        <li>
+                            If the name that you're entering isn't present, please enter it in the format "Muir, John" (since it'll be saved with other names, ideally it'll be in the same format as said other names). 
+                        </li>
+                    </ul>
+            </div>
+            <datalist id="usernames">
+                {% for user in usernames %}
+                <option>{{ user }}</option>
+                {% endfor %}
+            </datalist>
+            {% for c in contacts %}
+            <div class="row">
+                <input type="text" name="contactname{{ forloop.counter0 }}" placeholder="Responsible Party Name {{ forloop.counter }}"
+                       class="col-xl-3" value="{{ c.contact_name }}" list="usernames"/>
+                <input type="text" name="contactemail{{ forloop.counter0 }}" placeholder="Email"
+                       class="col-xl-3" value="{{ c.contact_email }}"/>
+                <input type="text" name="contactwork{{ forloop.counter0 }}" placeholder="Work Phone" 
+                       class="col-xl-2" value="{{ c.contact_work }}"/>
+                <input type="text" name="contacthome{{ forloop.counter0 }}" placeholder="Home Phone" 
+                       class="col-xl-2" value="{{ c.contact_home }}"/>
+                <input type="text" name="contactcell{{ forloop.counter0 }}" placeholder="Cell Phone" 
+                       class="col-xl-2" value="{{ c.contact_cell }}"/>
+            </div>
+            {% endfor %}
+        </div>
 
         <div class="entry-section">
             <h5>

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from colors.models import Color
 from locations.models import Location
+from users.models import Profile
 from vehicles.models import Vehicle
 
 
@@ -55,6 +56,8 @@ class Travel(models.Model):
     cell_number: str = models.CharField(max_length=20, null=True, blank=True)
     satellite_number: str = models.CharField(max_length=20, null=True, blank=True)
 
+    contacts = models.ManyToManyField(User, related_name='contacts')
+
     gar_average: int = models.IntegerField(null=True, blank=True)
     gar_mitigated: int = models.IntegerField(null=True, blank=True)
     gar_mitigations: str = models.TextField(null=True, blank=True)
@@ -82,7 +85,10 @@ class TravelUserUnit(models.Model):
     fitness: int = models.IntegerField(null= True, blank=True)
     env: int = models.IntegerField(null= True, blank=True)
     complexity: int = models.IntegerField(null= True, blank=True)
-    total: int = models.IntegerField(null= True, blank=True)
+
+    def total_gar_score(self):
+        return (self.supervision + self.planning + self.contingency + self.comms 
+                + self.team_selection + self.fitness + self.env + self.complexity)
 
 
 class TravelDayPlan(models.Model):

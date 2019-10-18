@@ -2,12 +2,7 @@ import os
 from typing import List
 
 
-def save_files_with_attributes(files, path: str, folder: str, name: str, start_date: str):
-    print('in save thing')
-    name = _generate_name(name, start_date)
-
-    if folder:
-        path = os.path.join(path, folder)
+def save_files_with_attributes(name: str, files, path: str, folder: str):
 
     os.makedirs(path, exist_ok=True)
 
@@ -47,7 +42,7 @@ def _save_files_with_name(files, path: str, name: str) -> List[str]:
     return file_names
 
 
-def _generate_name(name: str, start_date: str) -> str:
+def generate_name(name: str, start_date: str) -> str:
     """
     Makes a standardised name based on the input data.
 

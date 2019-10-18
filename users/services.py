@@ -41,5 +41,4 @@ def save_profile(user: User, call_sign: str = None,
         user.profile.department = department
     if active and user.profile.active != active:
         user.profile.active = active
-
     user.profile.save()

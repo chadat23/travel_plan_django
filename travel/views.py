@@ -1,5 +1,6 @@
-from datetime import datetime
 from copy import deepcopy
+from datetime import datetime
+import os
 from typing import Optional
 
 from django.conf import settings
@@ -11,7 +12,7 @@ from .models import Travel, TravelUserUnit, TravelDayPlan
 from colors.models import Color
 from colors import services as color_services
 from locations.models import Location
-from travel_utils import file_utils
+from travel_utils import file_utils, pdf_util
 from users import services as user_services
 from vehicles.models import Vehicle
 from vehicles import services as vehicle_services
@@ -50,6 +51,13 @@ try:
         context['endingpoint' + str(i)] = ''
         context['route' + str(i)] = ''
         context['mode' + str(i)] = ''
+
+    for i in range(2):
+        context['contactname' + str(i)] = ''
+        context['contactemail' + str(i)] = ''
+        context['contactwork' + str(i)] = ''
+        context['contacthome' + str(i)] = ''
+        context['contactcell' + str(i)] = ''
 except:
     pass
 
@@ -61,6 +69,7 @@ def entry(request: HttpRequest):
         con = _fill_context(request)
         con = _fill_travelers(request, con)
         con = _fill_day_plans(request, con)
+        con = _fill_contacts(request, con)
 
         _validate(request, con)
         if con.get('error'):
@@ -72,11 +81,33 @@ def entry(request: HttpRequest):
     else:
         con = _fill_travelers(request, con)
         con = _fill_day_plans(request, con)
+        con = _fill_contacts(request, con)
     return render(request, 'travel/entry.html', con)
 
 
 def search(request: HttpRequest):
     return render(request, 'travel/search.html', context)
+
+
+def _fill_contacts(request: HttpRequest, context: dict) -> dict:
+    context['contacts'] = []
+    for i in range(2):
+        rp = {}
+        if request.method == 'POST':
+            rp['contact_name'] = request.POST.get('contactname' + str(i), '')
+            rp['contact_email'] = request.POST.get('contactemail' + str(i), '')
+            rp['contact_work'] = request.POST.get('contactwork' + str(i), '')
+            rp['contact_home'] = request.POST.get('contacthome' + str(i), '')
+            rp['contact_cell'] = request.POST.get('contactcell' + str(i), '')
+        else:
+            rp['contact_name'] = ''
+            rp['contact_email'] = ''
+            rp['contact_work'] = ''
+            rp['contact_home'] = ''
+            rp['contact_cell'] = ''
+        context['contacts'].append(rp)
+
+    return context
 
 
 def _fill_day_plans(request: HttpRequest, context: dict) -> dict:
@@ -118,7 +149,6 @@ def _fill_travelers(request: HttpRequest, context: dict) -> dict:
             t['fitness'] = request.POST.get('fitness' + str(i), '')
             t['env'] = request.POST.get('env' + str(i), '')
             t['complexity'] = request.POST.get('complexity' + str(i), '')
-            t['total'] = request.POST.get('total' + str(i), '')
         else:
             t['traveler_name'] = ''
             t['call_sign'] = ''
@@ -133,7 +163,6 @@ def _fill_travelers(request: HttpRequest, context: dict) -> dict:
             t['fitness'] = ''
             t['env'] = ''
             t['complexity'] = ''
-            t['total'] = ''
         context['travelers'].append(t)
 
     return context
@@ -335,7 +364,6 @@ def _save_data(context: dict):
         travel_user_unit.fitness = _optional_int(t.get('fitness'))
         travel_user_unit.env = _optional_int(t.get('env'))
         travel_user_unit.complexity = _optional_int(t.get('complexity'))
-        travel_user_unit.total = _optional_int(t.get('total'))
 
         travel_user_unit.save()
 
@@ -352,15 +380,25 @@ def _save_data(context: dict):
 
         day_plan.save()
 
-    # TODO: working on saving files!!!
+    for rp in context['contacts']:
+        if not rp.get('contact_name'):
+            break
+        contact = user_services.add_if_not_present(rp.get('contact_name'), rp.get('contact_email'))
+        user_services.save_profile(contact, 
+                                   work_number=rp.get('contact_work'),
+                                   home_number=rp.get('contact_home'),
+                                   cell_number=rp.get('contact_cell'),)
+        travel.contacts.add(contact)
+
+    travel.save()
+
+    travel = Travel.objects.get(id=travel.id)
+    base_name = file_utils.generate_name(travel.trip_leader.username, travel.start_date.strftime('%Y%m%d'))
+    path = os.path.join(settings.MEDIA_ROOT, 'travel_files')
+    files = [base_name + '.pdf']
+    pdf_util.make_and_save_pdf(travel, base_name, path)
     if context['uploaded_files']:
-        files = file_utils.save_files_with_attributes(context['uploaded_files'],
-                                                      settings.MEDIA_ROOT,
-                                                      'travel_files',
-                                                      travel.trip_leader.username,
-                                                      travel.start_date.strftime('%Y%m%d'))
-    else:
-        files = []
+        files +  file_utils.save_files_with_attributes(base_name, context['uploaded_files'], path)
 
 
 def _optional_int(numb: str) -> Optional[int]:
