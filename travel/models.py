@@ -26,6 +26,28 @@ class Travel(models.Model):
     vehicle: Vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
     vehicle_location = models.CharField(max_length=50, null=True, blank=True)
 
+    bivy_gear = models.BooleanField(null=True, blank=True)
+    compass = models.BooleanField(null=True, blank=True)
+    first_aid_kit = models.BooleanField(null=True, blank=True)
+    flagging = models.BooleanField(null=True, blank=True)
+    flare = models.BooleanField(null=True, blank=True)
+    flashlight = models.BooleanField(null=True, blank=True)
+    gps = models.BooleanField(null=True, blank=True)
+    head_lamp = models.BooleanField(null=True, blank=True)
+    helmet = models.BooleanField(null=True, blank=True)
+    ice_axe = models.BooleanField(null=True, blank=True)
+    map = models.BooleanField(null=True, blank=True)
+    matches = models.BooleanField(null=True, blank=True)
+    probe_pole = models.BooleanField(null=True, blank=True)
+    radio = models.BooleanField(null=True, blank=True)
+    rope = models.BooleanField(null=True, blank=True)
+    shovel = models.BooleanField(null=True, blank=True)
+    signal_mirror = models.BooleanField(null=True, blank=True)
+    space_blanket = models.BooleanField(null=True, blank=True)
+    spare_battery = models.BooleanField(null=True, blank=True)
+    tent = models.BooleanField(null=True, blank=True)
+    whistle = models.BooleanField(null=True, blank=True)
+
     note: str = models.TextField(null=True, blank=True)
 
 

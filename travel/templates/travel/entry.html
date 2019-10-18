@@ -154,6 +154,125 @@
 
         <div class="entry-section">
             <h5>
+                Gear Info
+            </h5>
+            <div class="row">
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                        <input type="checkbox" name="bivygear" id="bivygear" {% if bivy_gear %}checked{% else %}{% endif %}>
+                        <label for="bivygear" class="form-check-label">Bivy Gear</label>
+                    </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="compass" id="compass" {% if compass %}checked{% else %}{% endif %}>
+                    <label for="compass" class="form-check-label">Compass</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="firstaidkit" id="firstaidkit" {% if first_aid_kit %}checked{% else %}{% endif %}>
+                    <label for="firstaidkit" class="form-check-label">First Aid Kit</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="flagging" id="flagging" {% if flagging %}checked{% else %}{% endif %}>
+                    <label for="flagging" class="form-check-label">Flagging</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="flare" id="flare" {% if flare %}checked{% else %}{% endif %}>
+                    <label for="flare" class="form-check-label">Flare</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="flashlight" id="flashlight" {% if flashlight %}checked{% else %}{% endif %}>
+                    <label for="flashlight" class="form-check-label">Flashlight</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="gps" id="gps" {% if gps %}checked{% else %}{% endif %}>
+                    <label for="gps" class="form-check-label">GPS</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="headlamp" id="headlamp" {% if head_lamp %}checked{% else %}{% endif %}>
+                    <label for="headlamp" class="form-check-label">Head Lamp</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="helmet" id="helmet" {% if helmet %}checked{% else %}{% endif %}>
+                    <label for="helmet" class="form-check-label">Helmet</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="iceaxe" id="iceaxe" {% if ice_axe %}checked{% else %}{% endif %}>
+                    <label for="iceaxe" class="form-check-label">Ice Axe</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="map" id="map" {% if map %}checked{% else %}{% endif %}>
+                    <label for="map" class="form-check-label">Map</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="matches" id="matches" {% if matches %}checked{% else %}{% endif %}>
+                    <label for="matches" class="form-check-label">Matches</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="probepole" id="probepole" {% if probe_pole %}checked{% else %}{% endif %}>
+                    <label for="probepole" class="form-check-label">Probe Pole</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="radio" id="radio" {% if radio %}checked{% else %}{% endif %}>
+                    <label for="radio" class="form-check-label">Radio</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="rope" id="rope" {% if rope %}checked{% else %}{% endif %}>
+                    <label for="rope" class="form-check-label">Rope</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="shovel" id="shovel" {% if shovel %}checked{% else %}{% endif %}>
+                    <label for="shovel" class="form-check-label">Shovel</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="signalmirror" id="signalmirror" {% if signal_mirror %}checked{% else %}{% endif %}>
+                    <label for="signalmirror" class="form-check-label">Signal Mirror</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="spaceblanket" id="spaceblanket" {% if space_blanket %}checked{% else %}{% endif %}>
+                    <label for="spaceblanket" class="form-check-label">Space Blanket</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="sparebattery" id="sparebattery" {% if spare_battery %}checked{% else %}{% endif %}>
+                    <label for="sparebattery" class="form-check-label">Spare Battery</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="tent" id="tent" {% if tent %}checked{% else %}{% endif %}>
+                    <label for="tent" class="form-check-label">Tent</label>
+                </div>
+                <div class="form-check col-sm-4 col-md-3 col-lg-2">
+                    <input type="checkbox" name="whistle" id="whistle" {% if whistle %}checked{% else %}{% endif %}>
+                    <label for="whistle" class="form-check-label">Whistle</label>
+                </div>
+            </div>
+
+{#            <input type="number" name="daysoffood" placeholder="Days Worth of Food" class="col-xl-6"#}
+{#                   value="{{ days_of_food }}" step="any" required>#}
+{#            <input type="text" name="weapon" placeholder="Weapon?" class="col-xl-6" value="{{ weapon }}"/>#}
+{#            <input type="text" name="radiomonitortime" placeholder="Time You Monitor Radio" class="col-xl-6"#}
+{#                   value="{{ radio_monitor_time }}"/>#}
+{#            <div class="col-xl-7" title="Off trail map included?">#}
+{#                Off-trail travel?#}
+{#                <label class="radio-inline">#}
+{#                    <input type="radio" name="offtrailtravel" id="offtrail1" value="yes" {% if off_trail_travel %}checked{% else %}{% endif %}>#}
+{#                    Yes#}
+{#                </label>#}
+{#                <label class="radio-inline">#}
+{#                    <input type="radio" name="offtrailtravel" id="offtrail2" value="no" {% if not off_trail_travel %}checked{% else %}{% endif %}>#}
+{#                    No#}
+{#                </label>#}
+{#<!--                <input type="file" name="offtrailtravelmapfile">-->#}
+{#            </div>#}
+{#            <div class="custom-file">#}
+{#                <label for="fileupload">Select a file showing your off trail travel if doing so.</label>#}
+{#<!--                <input type="file" name="fileupload" value="fileupload" id="fileupload">-->#}
+{#                <input type="file" name="fileupload" value="{{ fileupload }}" id="fileupload" multiple>#}
+{#            </div>#}
+{#            <input type="text" name="cellnumber" placeholder="Cell phone #" class="col-xl-6" value="{{ cell_number }}"/>#}
+{#            <input type="text" name="satellitenumber" placeholder="Satellite Phone #" class="col-xl-6"#}
+{#                   value="{{ satellite_number }}"/>#}
+        </div>
+
+
+        <div class="entry-section">
+            <h5>
                 Risk Calculation
             </h5>
             <div>

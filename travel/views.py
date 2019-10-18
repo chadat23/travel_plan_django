@@ -212,6 +212,28 @@ def _fill_context(request: HttpRequest) -> dict:
     con['vehicle_color'] = request.POST.get('vehiclecolor', '')
     con['vehicle_location'] = request.POST.get('vehiclelocation', '')
 
+    con['bivy_gear'] = request.POST.get('bivygear', '') == 'on'
+    con['compass'] = request.POST.get('compass', '') == 'on'
+    con['first_aid_kit'] = request.POST.get('firstaidkit', '') == 'on'
+    con['flagging'] = request.POST.get('flagging', '') == 'on'
+    con['flare'] = request.POST.get('flare', '') == 'on'
+    con['flashlight'] = request.POST.get('flashlight', '') == 'on'
+    con['gps'] = request.POST.get('gps', '') == 'on'
+    con['head_lamp'] = request.POST.get('headlamp', '') == 'on'
+    con['helmet'] = request.POST.get('helmet', '') == 'on'
+    con['ice_axe'] = request.POST.get('iceaxe', '') == 'on'
+    con['map'] = request.POST.get('map', '') == 'on'
+    con['matches'] = request.POST.get('matches', '') == 'on'
+    con['probe_pole'] = request.POST.get('probepole', '') == 'on'
+    con['radio'] = request.POST.get('radio', '') == 'on'
+    con['rope'] = request.POST.get('rope', '') == 'on'
+    con['shovel'] = request.POST.get('shovel', '') == 'on'
+    con['signal_mirror'] = request.POST.get('signalmirror', '') == 'on'
+    con['space_blanket'] = request.POST.get('spaceblanket', '') == 'on'
+    con['spare_battery'] = request.POST.get('sparebattery', '') == 'on'
+    con['tent'] = request.POST.get('tent', '') == 'on'
+    con['whistle'] = request.POST.get('whistle', '') == 'on'
+
     return con
 
 
@@ -231,6 +253,28 @@ def _save_data(context: dict):
                                                          context.get('vehicle_make'), context.get('vehicle_model'),
                                                          context.get('vehicle_color'), active=False)
     travel.vehicle_location = context.get('vehicle_location')
+
+    travel.bivy_gear = context.get('bivy_gear')
+    travel.compass = context.get('compass')
+    travel.first_aid_kit = context.get('first_aid_kit')
+    travel.flagging = context.get('flagging')
+    travel.flare = context.get('flare')
+    travel.flashlight = context.get('flashlight')
+    travel.gps = context.get('gps')
+    travel.head_lamp = context.get('head_lamp')
+    travel.helmet = context.get('helmet')
+    travel.ice_axe = context.get('ice_axe')
+    travel.map = context.get('map')
+    travel.matches = context.get('matches')
+    travel.probe_pole = context.get('probe_pole')
+    travel.radio = context.get('radio')
+    travel.rope = context.get('rope')
+    travel.shovel = context.get('shovel')
+    travel.signal_mirror = context.get('signal_mirror')
+    travel.space_blanket = context.get('space_blanket')
+    travel.spare_battery = context.get('spare_battery')
+    travel.tent = context.get('tent')
+    travel.whistle = context.get('whistle')
 
     travel.save()
 
