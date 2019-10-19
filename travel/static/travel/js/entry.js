@@ -123,15 +123,15 @@ $('[name="contactname1"]').blur(function() {
     });
 
 
-$('[name="carplate"]').blur(function() {
+$('[name="vehicleplate"]').blur(function() {
     $.getJSON($SCRIPT_ROOT + '/vehicle/get-vehicle-info', {
-        plate: $('[name="carplate"]').val()
+        plate: $('[name="vehicleplate"]').val()
     }, function(data) {
         console.log('going')
-        $('[name="carplate"]').val(data.plate);
-        $('[name="carmake"]').val(data.make);
-        $('[name="carmodel"]').val(data.model);
-        $('[name="carcolor"]').val(data.color);
+        $('[name="vehicleplate"]').val(data.plate);
+        $('[name="vehiclemake"]').val(data.make);
+        $('[name="vehiclemodel"]').val(data.model);
+        $('[name="vehiclecolor"]').val(data.color);
     });
     return false;
     });
