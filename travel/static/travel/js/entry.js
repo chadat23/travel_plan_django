@@ -124,15 +124,30 @@ $('[name="contactname1"]').blur(function() {
 
 
 $('[name="vehicleplate"]').blur(function() {
-    $.getJSON($SCRIPT_ROOT + '/vehicle/get-vehicle-info', {
-        plate: $('[name="vehicleplate"]').val()
-    }, function(data) {
-        console.log('going')
-        $('[name="vehicleplate"]').val(data.plate);
-        $('[name="vehiclemake"]').val(data.make);
-        $('[name="vehiclemodel"]').val(data.model);
-        $('[name="vehiclecolor"]').val(data.color);
-    });
+    console.log('starting')
+    $.ajax({
+        url: "/vehicles/ajax-get-vehicle-info-by-plate/",
+        data: {'plate': $('[name="vehicleplate"]').val()},
+        datatype: 'json',
+        success: function (data) {
+            console.log('going')
+            console.log(data)
+            $('[name="vehicleplate"]').val(data.plate);
+            $('[name="vehiclemake"]').val(data.make);
+            $('[name="vehiclemodel"]').val(data.model);
+            $('[name="vehiclecolor"]').val(data.color);
+        }
+
+    })
+    // $.getJSON($SCRIPT_ROOT + '/vehicle/get-vehicle-info', {
+    //     plate: $('[name="vehicleplate"]').val()
+    // }, function(data) {
+    //     console.log('going')
+    //     $('[name="vehicleplate"]').val(data.plate);
+    //     $('[name="vehiclemake"]').val(data.make);
+    //     $('[name="vehiclemodel"]').val(data.model);
+    //     $('[name="vehiclecolor"]').val(data.color);
+    // });
     return false;
     });
 
