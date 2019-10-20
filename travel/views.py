@@ -1,9 +1,10 @@
 from copy import deepcopy
 from datetime import datetime
 import os
-from typing import Optional
+from typing import Optional, List
 
 from django.conf import settings
+from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
 from django.http import HttpRequest
 from django.shortcuts import render
@@ -12,7 +13,7 @@ from .models import Travel, TravelUserUnit, TravelDayPlan
 from colors.models import Color
 from colors import services as color_services
 from locations.models import Location
-from travel_utils import file_utils, pdf_util
+from travel_utils import file_utils, pdf_util, email_util
 from users import services as user_services
 from vehicles.models import Vehicle
 from vehicles import services as vehicle_services
@@ -75,7 +76,9 @@ def entry(request: HttpRequest):
         if con.get('error'):
             return render(request, 'travel/entry.html', con)
 
-        _save_data(con)
+        travel, files, path = _save_data(con)
+
+        email_util.email_travel(travel, files, path)
 
         return render(request, 'travel/entry.html', con)
     else:
@@ -398,6 +401,8 @@ def _save_data(context: dict):
     pdf_util.make_and_save_pdf(travel, base_name, path)
     if context['uploaded_files']:
         files += file_utils.save_files_with_attributes(base_name, context['uploaded_files'], path)
+
+    return travel, files, path
 
 
 def _optional_int(numb: str) -> Optional[int]:

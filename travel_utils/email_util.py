@@ -1,11 +1,10 @@
 import os
 from typing import List
 
-from flask import current_app
-from flask_mail import Message
+from django.conf import settings
+from django.core.mail import EmailMessage
 
-from travel_plan import mail
-from travel_plan.travel.travels import Travel
+from travel.models import Travel
 
 
 def email_travel(travel: Travel, files: List[str], path: str):
@@ -46,15 +45,20 @@ def _send_mail(contact_list: List[str], files: List[str], subject: str, body: st
     :type body: str
     """
 
-    msg = Message(subject=subject,
-                  sender=current_app.config['MAIL_USERNAME'],
-                  recipients=contact_list,
-                  body=body)
-    for file in files:
-        with current_app.open_resource(file) as fp:
-            name = os.path.basename(file)
-            msg.attach(name, 'text/plain', fp.read())
-    mail.send(msg)
+    email = EmailMessage(subject=subject, body=body, to=contact_list)
+    for f in files:
+        email.attach_file(f)
+    email.send()
+
+    # msg = Message(subject=subject,
+    #               sender=current_app.config['MAIL_USERNAME'],
+    #               recipients=contact_list,
+    #               body=body)
+    # for file in files:
+    #     with current_app.open_resource(file) as fp:
+    #         name = os.path.basename(file)
+    #         msg.attach(name, 'text/plain', fp.read())
+    # mail.send(msg)
     print('Email Sent')
 
 
@@ -68,11 +72,11 @@ def _make_subject(travel: Travel) -> str:
     """
 
     subject = 'Travel itinerary for : '
-    for traveler in travel.travelers:
-        if traveler.call_sign:
-            subject += traveler.call_sign + ', '
+    for travel_unit in travel.traveluserunit_set.all():
+        if travel_unit.traveler.profile.call_sign:
+            subject += travel_unit.traveler.profile.call_sign + ', '
         else:
-            subject += traveler.traveler.name + ', '
+            subject += travel_unit.traveler.username + ', '
 
     return subject[:-2]
 
@@ -87,11 +91,11 @@ def _make_body(travel: Travel) -> str:
     """
     
     body = "Here's the travel itinerary for "
-    for traveler in travel.travelers:
-        if traveler.call_sign:
-            body += f"{traveler.traveler.name} ({traveler.call_sign}), "
+    for travel_unit in travel.traveluserunit_set.all():
+        if travel_unit.traveler.profile.call_sign:
+            body += f"{travel_unit.traveler.username} ({travel_unit.traveler.profile.call_sign}), "
         else:
-            body += f"{traveler.traveler.name}, "
+            body += f"{travel_unit.traveler.username}, "
 
     body = body[:-2] + '.'
 
@@ -109,8 +113,8 @@ def _make_contact_list(travel: Travel) -> List[str]:
     :rtype: List[str]
     """
     
-    email_list = list(current_app.config['DEFAULT_EMAIL_LIST'])
-    [email_list.append(e.traveler.email) for e in travel.travelers]
-    [email_list.append(c.email) for c in travel.contacts]
+    email_list = list(settings.DEFAULT_EMAIL_LIST)
+    [email_list.append(e.traveler.email) for e in travel.traveluserunit_set.all()]
+    [email_list.append(c.email) for c in travel.contacts.all()]
 
     return email_list
