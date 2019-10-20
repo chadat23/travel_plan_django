@@ -1,5 +1,5 @@
 import os
-from typing import Tuple
+from typing import Tuple, Optional
 
 from .pdf import PDF
 from travel.models import Travel, TravelUserUnit
@@ -60,9 +60,9 @@ def _generate_pdf(travel: Travel) -> PDF:
     pdf.add_cell(15, 'Tracked:', 'L', 1, 0, 'C')
     pdf.add_cell(20, 'PLB #:', 'L', 1, 1, 'C')
 
-    pdf.add_cell(22, str(travel.start_date), 'V', 1, 0, 'L')
+    pdf.add_cell(22, _str_empty(travel.start_date), 'V', 1, 0, 'L')
     pdf.add_cell(55, travel.entry_point.name, 'V', 1, 0, 'L')
-    pdf.add_cell(22, str(travel.end_date), 'V', 1, 0, 'L')
+    pdf.add_cell(22, _str_empty(travel.end_date), 'V', 1, 0, 'L')
     pdf.add_cell(55, travel.exit_point.name, 'V', 1, 0, 'L')
     pdf.add_cell(15, 'Yes' if travel.tracked else 'No', 'V', 1, 0, 'L')
     pdf.add_cell(20, travel.plb, 'V', 1, 1, 'L')
@@ -95,7 +95,7 @@ def _generate_pdf(travel: Travel) -> PDF:
     pdf.add_cell(35, 'Mode:', 'L', 1, 1, 'C')
 
     for day in sorted(travel.traveldayplan_set.all()):
-        pdf.add_cell(22, str(day.date), 'V', 1, 0, 'L')
+        pdf.add_cell(22, _str_empty(day.date), 'V', 1, 0, 'L')
         pdf.add_cell(46, day.starting_point.name, 'V', 1, 0, 'L')
         pdf.add_cell(46, day.ending_point.name, 'V', 1, 0, 'L')
         pdf.add_cell(40, day.route, 'V', 1, 0, 'L')
@@ -147,7 +147,7 @@ def _generate_pdf(travel: Travel) -> PDF:
     pdf.add_cell(width1, 'X' if travel.rope else '', 'V', 1, 0, 'L', font_size=equip_font_size)
     pdf.add_cell(width2, 'Rope', 'V', 0, 0, 'L')
     pdf.add_cell(30, travel.weapon, 'V', 1, 0, 'C')
-    pdf.add_cell(30, str(travel.days_of_food), 'V', 1, 0, 'C')
+    pdf.add_cell(30, _str_empty(travel.days_of_food), 'V', 1, 0, 'C')
     pdf.add_cell(30, travel.radio_monitor_time, 'V', 1, 1, 'C')
     pdf.add_cell(width1, 'X' if travel.compass else '', 'V', 1, 0, 'L', font_size=equip_font_size)
     pdf.add_cell(width2, 'Compas', 'V', 0, 0, 'L')
@@ -253,12 +253,12 @@ def _generate_pdf(travel: Travel) -> PDF:
     pdf.add_cell(39, 'Average Team Member Totals', 'L', 1, 1, 'C', font_size=7)
     pdf.set_xy(gar_x, gar_y + 1 + 3 * gar_color_height + pdf.height)
     pdf.set_fill_color(*_set_gar_color(pdf, travel.gar_average))
-    pdf.add_cell(39, str(travel.gar_average), 'V', 1, 0, 'C', 1)
+    pdf.add_cell(39, _str_empty(travel.gar_average), 'V', 1, 0, 'C', 1)
     pdf.set_xy(gar_x, gar_y + 1 + 3 * gar_color_height + 2 * pdf.height)
     pdf.add_cell(39, 'Mitigated GAR', 'L', 1, 0, 'C')
     pdf.set_xy(gar_x, gar_y + 1 + 3 * gar_color_height + 3 * pdf.height)
     pdf.set_fill_color(*_set_gar_color(pdf, travel.gar_mitigated))
-    pdf.add_cell(39, str(travel.gar_mitigated), 'V', 1, 1, 'C', 1)
+    pdf.add_cell(39, _str_empty(travel.gar_mitigated), 'V', 1, 1, 'C', 1)
 
     pdf.set_y(gar_y + gar_height + 1 + pdf.height * (1 + len(other_units)))
 
@@ -346,17 +346,17 @@ def _write_gar(pdf: PDF, i: int, unit: TravelUserUnit, width: int):
     :return: None
     """
 
-    pdf.add_cell(width, str(i), 'V', 1, 0, 'C')
-    pdf.add_cell(width, str(unit.supervision), 'V', 1, 0, 'C')
-    pdf.add_cell(width, str(unit.planning), 'V', 1, 0, 'C')
-    pdf.add_cell(width, str(unit.contingency), 'V', 1, 0, 'C')
-    pdf.add_cell(width, str(unit.comms), 'V', 1, 0, 'C')
-    pdf.add_cell(width, str(unit.team_selection), 'V', 1, 0, 'C')
-    pdf.add_cell(width, str(unit.fitness), 'V', 1, 0, 'C')
-    pdf.add_cell(width, str(unit.env), 'V', 1, 0, 'C')
-    pdf.add_cell(width, str(unit.complexity), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(i), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(unit.supervision), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(unit.planning), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(unit.contingency), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(unit.comms), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(unit.team_selection), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(unit.fitness), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(unit.env), 'V', 1, 0, 'C')
+    pdf.add_cell(width, _str_empty(unit.complexity), 'V', 1, 0, 'C')
     pdf.set_fill_color(*_set_gar_color(pdf, unit.total_gar_score()))
-    pdf.add_cell(width, str(unit.total_gar_score()), 'V', 1, 1, 'C', 1)
+    pdf.add_cell(width, _str_empty(unit.total_gar_score()), 'V', 1, 1, 'C', 1)
 
 
 def _set_gar_color(pdf, gar_score: int) -> Tuple[int, int, int]:
@@ -369,9 +369,18 @@ def _set_gar_color(pdf, gar_score: int) -> Tuple[int, int, int]:
     :return: Tuple[int, int, int]
     """
 
+    if not gar_score:
+        return pdf.red
     if gar_score < 36:
         return pdf.green
     elif 35 < gar_score < 61:
         return pdf.amber
     else:
         return pdf.red
+
+
+def _str_empty(txt: str) -> Optional[str]:
+    if txt is None:
+        return ''
+    else:
+        return str(txt)

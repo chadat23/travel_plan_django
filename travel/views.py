@@ -308,7 +308,7 @@ def _save_data(context: dict):
     travel.tent = context.get('tent')
     travel.whistle = context.get('whistle')
 
-    travel.days_of_food = context.get('days_of_food')
+    travel.days_of_food = _optional_float(context.get('days_of_food'))
     travel.weapon = context.get('weapon')
     travel.radio_monitor_time = context.get('radio_monitor_time')
     travel.off_trail_travel = context.get('off_trail_travel')
@@ -365,8 +365,8 @@ def _save_data(context: dict):
         day_plan.date = datetime.strptime(d.get('date'), '%Y-%m-%d')
         day_plan.starting_point = Location.objects.filter(name=d.get('starting_point')).first()
         day_plan.ending_point = Location.objects.filter(name=d.get('ending_point')).first()
-        day_plan.route = d.get('route')
-        day_plan.mode = d.get('mode')
+        day_plan.route = d.get('route') if d.get('route') else None
+        day_plan.mode = d.get('mode') if d.get('mode') else None
 
         day_plan.save()
 
@@ -399,5 +399,14 @@ def _optional_int(numb: str) -> Optional[int]:
         return
     try:
         return int(numb)
+    except:
+        return
+
+
+def _optional_float(numb: str) -> Optional[int]:
+    if not numb:
+        return
+    try:
+        return float(numb)
     except:
         return

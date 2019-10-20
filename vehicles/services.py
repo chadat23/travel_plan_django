@@ -18,7 +18,6 @@ def add_if_not_present(plate: str, make: str = None, model: str = None, color: s
         if color:
             color = color.lower().strip().title()
             color, created = Color.objects.get_or_create(name=color)
-            # color = color_services.add_if_not_present(color)
             vehicle.color = Color.objects.filter(name=color).first()
         if location:
             vehicle.location = location

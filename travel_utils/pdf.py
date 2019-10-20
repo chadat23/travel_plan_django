@@ -88,3 +88,4 @@ class PDF(fpdf.FPDF):
         self.set_font('Arial', _font_style, size=_font_size)
 
         self.cell(w, height, txt, border, ln, align, fill, link)
+
