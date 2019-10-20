@@ -10,7 +10,7 @@ def get_user_profile_by_username(request: HttpRequest):
     if request.method == 'GET':
         username = request.GET.get('username', '').strip()
         traveler_unit: TravelUserUnit = TravelUserUnit.objects.filter(traveler__username=username)\
-            .order_by('-travel__start_date').first()
+            .order_by('-travel__start_date').order_by('-travel__created_date').first()
     else:
         traveler_unit: TravelUserUnit = TravelUserUnit()
 

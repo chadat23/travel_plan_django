@@ -25,20 +25,20 @@ def add_if_not_present(username: str = None, email: str = None, first_name: str 
     return user
 
 
-def save_profile(user: User, call_sign: str = None,
-                 work_number: str = None, home_number: str = None, cell_number: str = None,
-                 department: Department = None, active: bool = None) -> None:
+def save_profile(user: User, call_sign: str, work_number: str, home_number: str, cell_number: str,
+                 department: Department, active: bool) -> None:
 
-    if call_sign and user.profile.call_sign != call_sign:
+    # '!= None' is being used so that enpty strings can be the updated value
+    if call_sign != None and user.profile.call_sign != call_sign:
         user.profile.call_sign = call_sign
-    if work_number and user.profile.work_number != work_number:
+    if work_number != None and user.profile.work_number != work_number:
         user.profile.work_number = work_number
-    if home_number and user.profile.home_number != home_number:
+    if home_number != None and user.profile.home_number != home_number:
         user.profile.home_number = home_number
-    if cell_number and user.profile.cell_number != cell_number:
+    if cell_number != None and user.profile.cell_number != cell_number:
         user.profile.cell_number = cell_number
-    if department and user.profile.department != department:
+    if department != None and user.profile.department != department:
         user.profile.department = department
-    if active and user.profile.active != active:
+    if active != None and user.profile.active != active:
         user.profile.active = active
     user.profile.save()

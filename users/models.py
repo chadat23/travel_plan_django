@@ -22,3 +22,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'Profile for: {self.user.username}'
+
+    # def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+

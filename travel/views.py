@@ -18,78 +18,42 @@ from users import services as user_services
 from vehicles.models import Vehicle
 from vehicles import services as vehicle_services
 
-try:
+
+def entry(request: HttpRequest):
     context = {
         'title': 'Travel Plan Entry',
         'colors': Color.objects.order_by('name').values_list('name', flat=True),
         'locations': Location.objects.order_by('name').values_list('name', flat=True),
         'usernames': User.objects.order_by('-username').filter(profile__active=True).values_list('username', flat=True),
         'vehicles': [str(v) for v in Vehicle.objects.order_by('plate').filter(active=True).all()],
-        # 'error': '',
-        # 'start_date': '',
-        # 'entry_point': '',
-        # 'end_date': '',
-        # 'exit_point': '',
-        # 'tracked': True,
-        # 'vehicle_plate': '',
-        # 'vehicle_make': '',
-        # 'vehicle_model': '',
-        # 'vehicle_color': '',
-        # 'vehicle_location': '',
-        # 'off_trail_travel': True,
+        'error': '',
     }
 
-    for i in range(4):
-        context['travelername' + str(i)] = ''
-        context['callsign' + str(i)] = ''
-        context['packcolor' + str(i)] = ''
-        context['tentcolor' + str(i)] = ''
-        context['flycolor' + str(i)] = ''
-
-    for i in range(9):
-        context['date' + str(i)] = ''
-        context['startingpoint' + str(i)] = ''
-        context['endingpoint' + str(i)] = ''
-        context['route' + str(i)] = ''
-        context['mode' + str(i)] = ''
-
-    for i in range(2):
-        context['contactname' + str(i)] = ''
-        context['contactemail' + str(i)] = ''
-        context['contactwork' + str(i)] = ''
-        context['contacthome' + str(i)] = ''
-        context['contactcell' + str(i)] = ''
-except:
-    pass
-
-
-def entry(request: HttpRequest):
-    con = deepcopy(context)
-
     if request.method == 'POST':
-        con = _fill_context(request)
-        con = _fill_travelers(request, con)
-        con = _fill_day_plans(request, con)
-        con = _fill_contacts(request, con)
+        context = _fill_context(request, context)
+        context = _fill_travelers(request, context)
+        context = _fill_day_plans(request, context)
+        context = _fill_contacts(request, context)
 
-        _validate(request, con)
-        if con.get('error'):
-            return render(request, 'travel/entry.html', con)
+        _validate(request, context)
+        if context.get('error'):
+            return render(request, 'travel/entry.html', context)
 
-        travel, files, path = _save_data(con)
+        travel, files, path = _save_data(context)
 
-        email_util.email_travel(travel, files, path)
+        # email_util.email_travel(travel, files, path)
 
-        # return render(request, 'travel/entry.html', con)
-        return redirect('travel-sent')
+        return render(request, 'travel/entry.html', context)
+        # return redirect('travel-sent')
     else:
-        con = _fill_travelers(request, con)
-        con = _fill_day_plans(request, con)
-        con = _fill_contacts(request, con)
-    return render(request, 'travel/entry.html', con)
+        context = _fill_travelers(request, context)
+        context = _fill_day_plans(request, context)
+        context = _fill_contacts(request, context)
+    return render(request, 'travel/entry.html', context)
 
 
 def search(request: HttpRequest):
+    context = {}
     return render(request, 'travel/search.html', context)
 
 
@@ -157,6 +121,7 @@ def _fill_travelers(request: HttpRequest, context: dict) -> dict:
             t['fitness'] = request.POST.get('fitness' + str(i), '')
             t['env'] = request.POST.get('env' + str(i), '')
             t['complexity'] = request.POST.get('complexity' + str(i), '')
+            t['total'] = request.POST.get('total' + str(1), '')
         else:
             t['traveler_name'] = ''
             t['call_sign'] = ''
@@ -171,6 +136,7 @@ def _fill_travelers(request: HttpRequest, context: dict) -> dict:
             t['fitness'] = ''
             t['env'] = ''
             t['complexity'] = ''
+            t['total'] = ''
         context['travelers'].append(t)
 
     return context
@@ -187,23 +153,34 @@ def _validate(request: HttpRequest, context: dict) -> dict:
 
 
 def _validate_fields(request: HttpRequest, context: dict):
-    # if it's reported that there'll be off trail travel then there should be uploaded files
-    # if self.uploaded_files:
-    #     file_name_1 = self.uploaded_files[0].filename
-    # else:
-    #     file_name_1 = ''
-    # if (self.off_trail_travel and (not file_name_1)) or (not self.off_trail_travel and file_name_1):
-    #     self.error = "Either you should select that you'll be traveling off trail and select files to upload, " \
-    #                  "or have neither of those. Sorry, there's no present way to un-select the files."
+    # Validate that file uploads and off trail travel selection matches
+    file_present = len(context.get('uploaded_files')) > 0
+    if (context.get('off_trail_travel') and not file_present) or (not context.get('off_trail_travel') and file_present):
+        context['error'] = "Either you should select that you'll be traveling off trail and select files to upload, " \
+                     "or have neither of those. Sorry, there's no present way to un-select the files."
 
     # Validate that logical traveler/gar fields make sense
     for t in context.get('travelers'):
         if not t.get('traveler_name'):
             continue
         for k, v in t.items():
-            if 'color' not in k and not v:
-                context['error'] = "All fields must be filled in for each traveler and each accompanying GAR score."
+            if ('color' not in k and 'call_sign' not in k) and not v:
+                context['error'] = "All values must be filled in for each travelers accompanying GAR score."
                 break
+
+    # Validate that existing locations were used
+    location_fields = ['entrypoint', 'exitpoint']
+    i = 0
+    while request.POST.get('date' + str(i)):
+        location_fields.append('startingpoint' + str(i))
+        location_fields.append('endingpoint' + str(i))
+        i += 1
+    for field in location_fields:
+        entered_name = request.POST.get(field, '')
+        if not Location.objects.filter(name=entered_name).exists():
+            context['error'] = "All Location fields must be set to locations that are available in the" \
+                               f''' accompanying dropdown lists. "{entered_name}" isn't such a location.'''
+            break
 
     return context
 
@@ -238,59 +215,57 @@ def _validate_contacts(context: dict):
     return context
 
 
-def _fill_context(request: HttpRequest) -> dict:
-    con = deepcopy(context)
-    con['start_date'] = request.POST.get('startdate', '')
-    con['entry_point'] = request.POST.get('entrypoint', '')
-    con['end_date'] = request.POST.get('enddate', '')
-    con['exit_point'] = request.POST.get('exitpoint', '')
-    con['tracked'] = request.POST.get('tracked', '') == 'yes'
-    con['plb'] = request.POST.get('plb', '')
+def _fill_context(request: HttpRequest, context) -> dict:
 
-    # con = _fill_travelers(request, con)
+    context['start_date'] = request.POST.get('startdate')
+    context['entry_point'] = request.POST.get('entrypoint')
+    context['end_date'] = request.POST.get('enddate')
+    context['exit_point'] = request.POST.get('exitpoint')
+    context['tracked'] = request.POST.get('tracked') == 'yes'
+    context['plb'] = request.POST.get('plb')
 
-    con['vehicle_plate'] = request.POST.get('vehicleplate', '')
-    con['vehicle_make'] = request.POST.get('vehiclemake', '')
-    con['vehicle_model'] = request.POST.get('vehiclemodel', '')
-    con['vehicle_color'] = request.POST.get('vehiclecolor', '')
-    con['vehicle_location'] = request.POST.get('vehiclelocation', '')
+    context['vehicle_plate'] = request.POST.get('vehicleplate')
+    context['vehicle_make'] = request.POST.get('vehiclemake')
+    context['vehicle_model'] = request.POST.get('vehiclemodel')
+    context['vehicle_color'] = request.POST.get('vehiclecolor')
+    context['vehicle_location'] = request.POST.get('vehiclelocation')
 
-    con['bivy_gear'] = request.POST.get('bivygear', '') == 'on'
-    con['compass'] = request.POST.get('compass', '') == 'on'
-    con['first_aid_kit'] = request.POST.get('firstaidkit', '') == 'on'
-    con['flagging'] = request.POST.get('flagging', '') == 'on'
-    con['flare'] = request.POST.get('flare', '') == 'on'
-    con['flashlight'] = request.POST.get('flashlight', '') == 'on'
-    con['gps'] = request.POST.get('gps', '') == 'on'
-    con['head_lamp'] = request.POST.get('headlamp', '') == 'on'
-    con['helmet'] = request.POST.get('helmet', '') == 'on'
-    con['ice_axe'] = request.POST.get('iceaxe', '') == 'on'
-    con['map'] = request.POST.get('map', '') == 'on'
-    con['matches'] = request.POST.get('matches', '') == 'on'
-    con['probe_pole'] = request.POST.get('probepole', '') == 'on'
-    con['radio'] = request.POST.get('radio', '') == 'on'
-    con['rope'] = request.POST.get('rope', '') == 'on'
-    con['shovel'] = request.POST.get('shovel', '') == 'on'
-    con['signal_mirror'] = request.POST.get('signalmirror', '') == 'on'
-    con['space_blanket'] = request.POST.get('spaceblanket', '') == 'on'
-    con['spare_battery'] = request.POST.get('sparebattery', '') == 'on'
-    con['tent'] = request.POST.get('tent', '') == 'on'
-    con['whistle'] = request.POST.get('whistle', '') == 'on'
+    context['bivy_gear'] = request.POST.get('bivygear') == 'on'
+    context['compass'] = request.POST.get('compass') == 'on'
+    context['first_aid_kit'] = request.POST.get('firstaidkit') == 'on'
+    context['flagging'] = request.POST.get('flagging') == 'on'
+    context['flare'] = request.POST.get('flare') == 'on'
+    context['flashlight'] = request.POST.get('flashlight') == 'on'
+    context['gps'] = request.POST.get('gps') == 'on'
+    context['head_lamp'] = request.POST.get('headlamp') == 'on'
+    context['helmet'] = request.POST.get('helmet') == 'on'
+    context['ice_axe'] = request.POST.get('iceaxe') == 'on'
+    context['map'] = request.POST.get('map') == 'on'
+    context['matches'] = request.POST.get('matches') == 'on'
+    context['probe_pole'] = request.POST.get('probepole') == 'on'
+    context['radio'] = request.POST.get('radio') == 'on'
+    context['rope'] = request.POST.get('rope') == 'on'
+    context['shovel'] = request.POST.get('shovel') == 'on'
+    context['signal_mirror'] = request.POST.get('signalmirror') == 'on'
+    context['space_blanket'] = request.POST.get('spaceblanket') == 'on'
+    context['spare_battery'] = request.POST.get('sparebattery') == 'on'
+    context['tent'] = request.POST.get('tent') == 'on'
+    context['whistle'] = request.POST.get('whistle') == 'on'
 
-    con['days_of_food'] = request.POST.get('daysoffood')
-    con['weapon'] = request.POST.get('weapon')
-    con['radio_monitor_time'] = request.POST.get('radiomonitortime')
-    con['off_trail_travel'] = request.POST.get('offtrailtravel') == 'yes'
-    con['uploaded_files'] = request.FILES.getlist('fileupload')
-    con['cell_number'] = request.POST.get('cellnumber')
-    con['satellite_number'] = request.POST.get('satellitenumber')
+    context['days_of_food'] = request.POST.get('daysoffood')
+    context['weapon'] = request.POST.get('weapon')
+    context['radio_monitor_time'] = request.POST.get('radiomonitortime')
+    context['off_trail_travel'] = request.POST.get('offtrailtravel') == 'yes'
+    context['uploaded_files'] = request.FILES.getlist('fileupload')
+    context['cell_number'] = request.POST.get('cellnumber')
+    context['satellite_number'] = request.POST.get('satellitenumber')
 
-    con['gar_average'] = request.POST.get('garaverage', '')
-    con['gar_mitigated'] = request.POST.get('garmitigated', '')
-    con['gar_mitigations'] = request.POST.get('garmitigations')
-    con['notes'] = request.POST.get('notes')
+    context['gar_average'] = request.POST.get('garaverage')
+    context['gar_mitigated'] = request.POST.get('garmitigated')
+    context['gar_mitigations'] = request.POST.get('garmitigations')
+    context['notes'] = request.POST.get('notes')
 
-    return con
+    return context
 
 
 def _save_data(context: dict):
@@ -303,6 +278,7 @@ def _save_data(context: dict):
     travel.plb = context.get('plb')
 
     user = user_services.add_if_not_present(username=context.get('travelers')[0]['traveler_name'])
+    # user =
     travel.trip_leader = User.objects.filter(username=user.username).first()
 
     travel.vehicle = vehicle_services.add_if_not_present(context.get('vehicle_plate').split(' ')[0],
@@ -349,19 +325,26 @@ def _save_data(context: dict):
     for t in context['travelers']:
         if not t.get('traveler_name'):
             break
-        user = user_services.add_if_not_present(username=t.get('traveler_name'))
-        user_services.save_profile(user, call_sign=t.get('call_sign'))
+        # user = user_services.add_if_not_present(username=t.get('traveler_name'))
+        user, created = User.objects.get_or_create(username=t.get('traveler_name').strip())
+        user_services.save_profile(user, t.get('call_sign'), None, None, None, None, None)
 
         travel_user_unit = TravelUserUnit()
         travel_user_unit.traveler = user
         travel_user_unit.travel = travel
 
-        color = color_services.add_if_not_present(t.get('pack_color'))
-        travel_user_unit.pack_color = Color.objects.filter(name=color).first()
-        color = color_services.add_if_not_present(t.get('tent_color'))
-        travel_user_unit.tent_color = Color.objects.filter(name=color).first()
-        color = color_services.add_if_not_present(t.get('fly_color'))
-        travel_user_unit.fly_color = Color.objects.filter(name=color).first()
+        color = t.get('pack_color', '').lower().strip().title()
+        if color:
+            color, created = Color.objects.get_or_create(name=color)
+            travel_user_unit.pack_color = color
+        color = t.get('tent_color', '').lower().strip().title()
+        if color:
+            color, created = Color.objects.get_or_create(name=color)
+            travel_user_unit.tent_color = color
+        color = t.get('fly_color', '').lower().strip().title()
+        if color:
+            color, created = Color.objects.get_or_create(name=color)
+            travel_user_unit.fly_color = color
 
         travel_user_unit.supervision = _optional_int(t.get('supervision'))
         travel_user_unit.planning = _optional_int(t.get('planning'))
@@ -391,10 +374,11 @@ def _save_data(context: dict):
         if not rp.get('contact_name'):
             break
         contact = user_services.add_if_not_present(rp.get('contact_name'), rp.get('contact_email'))
-        user_services.save_profile(contact, 
-                                   work_number=rp.get('contact_work'),
-                                   home_number=rp.get('contact_home'),
-                                   cell_number=rp.get('contact_cell'),)
+        user_services.save_profile(contact, None,
+                                   rp.get('contact_work'),
+                                   rp.get('contact_home'),
+                                   rp.get('contact_cell'),
+                                   None, None)
         travel.contacts.add(contact)
 
     travel.save()

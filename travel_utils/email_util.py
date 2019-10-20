@@ -25,14 +25,14 @@ def email_travel(travel: Travel, files: List[str], path: str):
     body = _make_body(travel)
 
     try:
-        _send_mail(contact_list, [os.path.join(path, file) for file in files], subject, body)
+        _send_email(contact_list, [os.path.join(path, file) for file in files], subject, body)
         return True
     except Exception as e:
         print('Exception', e)
         return False
 
 
-def _send_mail(contact_list: List[str], files: List[str], subject: str, body: str):
+def _send_email(contact_list: List[str], files: List[str], subject: str, body: str):
     """
     Helper function to consturct and send the email.
     :param email_list: a list of recipients' email addresses

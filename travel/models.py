@@ -10,7 +10,7 @@ from vehicles.models import Vehicle
 
 
 class Travel(models.Model):
-    created_date: datetime = models.DateField(auto_now_add=True)
+    created_date: datetime = models.DateTimeField(auto_now_add=True)
     last_edited_date: datetime = models.DateField(auto_now=True)
 
     start_date: datetime = models.DateField(null=True, blank=True)
