@@ -41,7 +41,7 @@ def entry(request: HttpRequest):
 
         travel, files, path = _save_data(context)
 
-        # email_util.email_travel(travel, files, path)
+        email_util.email_travel(travel, files, path)
 
         return render(request, 'travel/entry.html', context)
         # return redirect('travel-sent')
