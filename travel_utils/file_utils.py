@@ -2,7 +2,7 @@ import os
 from typing import List
 
 
-def save_files_with_attributes(name: str, files, path: str, folder: str):
+def save_files_with_attributes(name: str, files, path: str):
 
     # os.makedirs(path, exist_ok=True)
 
@@ -27,9 +27,6 @@ def _save_files_with_name(files, path: str, name: str) -> List[str]:
 
     for i, f in enumerate(files):
         ext = os.path.splitext(f.name)[1]
-        print(ext, 'ext')
-        print(dir(f))
-        print(f.__dict__)
         file_name = f'{name}_{i + 1}{ext}'
         full_path = os.path.join(path, file_name)
         with open(full_path, 'wb+') as destination:
