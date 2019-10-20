@@ -43,7 +43,7 @@ function gar_math() {
     if (grand_total > 0) {
         avg = grand_total / j;
 
-        $("[name='garaverage']").val(avg);
+        $("[name='garaverage']").val(Math.round(avg));
 
         $("[name='garaverage']").removeClass('gar-green');
         $("[name='garaverage']").removeClass('gar-amber');
@@ -124,41 +124,36 @@ $('[name="contactname1"]').blur(function() {
 
 
 $('[name="vehicleplate"]').blur(function() {
-    console.log('starting')
     $.ajax({
         url: "/vehicles/ajax-get-vehicle-info-by-plate/",
         data: {'plate': $('[name="vehicleplate"]').val()},
         datatype: 'json',
         success: function (data) {
-            console.log('going')
-            console.log(data)
+            console.log('going');
+            console.log(data);
             $('[name="vehicleplate"]').val(data.plate);
             $('[name="vehiclemake"]').val(data.make);
             $('[name="vehiclemodel"]').val(data.model);
             $('[name="vehiclecolor"]').val(data.color);
         }
-
-    })
-    // $.getJSON($SCRIPT_ROOT + '/vehicle/get-vehicle-info', {
-    //     plate: $('[name="vehicleplate"]').val()
-    // }, function(data) {
-    //     console.log('going')
-    //     $('[name="vehicleplate"]').val(data.plate);
-    //     $('[name="vehiclemake"]').val(data.make);
-    //     $('[name="vehiclemodel"]').val(data.model);
-    //     $('[name="vehiclecolor"]').val(data.color);
-    // });
+    });
     return false;
     });
 
 function autofill_travelerunit_info(index) {
-    $.getJSON($SCRIPT_ROOT + '/travel/get-travelunit-info', {
-        name: $('[name="travelername' + index + '"]').val()
-    }, function(data) {
-        $('[name="callsign' + index + '"]').val(data.call_sign);
-        $('[name="packcolor' + index + '"]').val(data.pack_color);
-        $('[name="tentcolor' + index + '"]').val(data.tent_color);
-        $('[name="flycolor' + index + '"]').val(data.fly_color);
+    console.log('starting')
+    $.ajax({
+        url: "/users/ajax-get-user-and-profile-by-username/",
+        data: {'username': $('[name="travelername' + index + '"]').val()},
+        datatype: 'json',
+        success: function (data) {
+            console.log('going');
+            console.log(data);
+            $('[name="callsign' + index + '"]').val(data.call_sign);
+            $('[name="packcolor' + index + '"]').val(data.pack_color);
+            $('[name="tentcolor' + index + '"]').val(data.tent_color);
+            $('[name="flycolor' + index + '"]').val(data.fly_color);
+        }
     });
     return false;
     }

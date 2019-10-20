@@ -90,6 +90,10 @@ class TravelUserUnit(models.Model):
         return (self.supervision + self.planning + self.contingency + self.comms 
                 + self.team_selection + self.fitness + self.env + self.complexity)
 
+    def __str__(self):
+        return f'{self.created_date.strftime("%Y-%m-%d")} {self.traveler.username}, ' \
+               f'{self.travel.entry_point.name} - {self.travel.entry_point.name}'
+
 
 class TravelDayPlan(models.Model):
     created_date: datetime = models.DateField(auto_now_add=True)

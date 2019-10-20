@@ -274,7 +274,6 @@ def _fill_context(request: HttpRequest) -> dict:
     con['radio_monitor_time'] = request.POST.get('radiomonitortime')
     con['off_trail_travel'] = request.POST.get('offtrailtravel') == 'yes'
     con['uploaded_files'] = request.FILES.getlist('fileupload')
-    # con['uploaded_files'] = request.FILES
     con['cell_number'] = request.POST.get('cellnumber')
     con['satellite_number'] = request.POST.get('satellitenumber')
 
@@ -398,13 +397,12 @@ def _save_data(context: dict):
     files = [base_name + '.pdf']
     pdf_util.make_and_save_pdf(travel, base_name, path)
     if context['uploaded_files']:
-        files +  file_utils.save_files_with_attributes(base_name, context['uploaded_files'], path)
+        files += file_utils.save_files_with_attributes(base_name, context['uploaded_files'], path)
 
 
 def _optional_int(numb: str) -> Optional[int]:
     if not numb:
         return
-
     try:
         return int(numb)
     except:

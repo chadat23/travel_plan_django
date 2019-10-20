@@ -4,11 +4,9 @@ from typing import List
 
 def save_files_with_attributes(name: str, files, path: str, folder: str):
 
-    os.makedirs(path, exist_ok=True)
+    # os.makedirs(path, exist_ok=True)
 
     return _save_files_with_name(files, path, name)
-
-    
 
 
 def _save_files_with_name(files, path: str, name: str) -> List[str]:

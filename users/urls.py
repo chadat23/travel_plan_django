@@ -17,5 +17,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('ajax-get-vehicle-info-by-plate/', views.get_vehicle_by_plate, name='ajax_vehicle_info'),
+    path('ajax-get-user-and-profile-by-username/', views.get_user_profile_by_username, name='ajax_user_profile_info'),
 ]

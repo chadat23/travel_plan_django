@@ -130,9 +130,14 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+MEDIA_SUBFOLDERS = ['travel_files']
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 DEFAULT_EMAIL_LIST = config.DEFAULT_EMAIL_LIST
 MAIL_USERNAME = config.MAIL_USERNAME
 MAIL_PASSWORD = config.MAIL_PASSWORD
+
+for f in MEDIA_SUBFOLDERS:
+    path = os.path.join(MEDIA_ROOT, f)
+    os.makedirs(path, exist_ok=True)
