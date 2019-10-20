@@ -19,4 +19,5 @@ from . import views
 urlpatterns = [
     path('entry/', views.entry, name='travel-entry'),
     path('search/', views.search, name='travel-search'),
+    path('sent/', views.sent, name='travel-sent'),
 ]

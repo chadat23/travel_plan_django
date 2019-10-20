@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
 from django.http import HttpRequest
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .models import Travel, TravelUserUnit, TravelDayPlan
 from colors.models import Color
@@ -80,7 +80,8 @@ def entry(request: HttpRequest):
 
         email_util.email_travel(travel, files, path)
 
-        return render(request, 'travel/entry.html', con)
+        # return render(request, 'travel/entry.html', con)
+        return redirect('travel-sent')
     else:
         con = _fill_travelers(request, con)
         con = _fill_day_plans(request, con)
@@ -90,6 +91,10 @@ def entry(request: HttpRequest):
 
 def search(request: HttpRequest):
     return render(request, 'travel/search.html', context)
+
+
+def sent(request: HttpRequest):
+    return render(request, 'travel/sent.html', {})
 
 
 def _fill_contacts(request: HttpRequest, context: dict) -> dict:
