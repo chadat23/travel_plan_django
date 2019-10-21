@@ -7,7 +7,7 @@ from departments.models import Department
 
 
 class Vehicle(models.Model):
-    created_date: datetime = models.DateField(auto_now_add=True)
+    created_date: datetime = models.DateTimeField(auto_now_add=True)
 
     plate: str = models.CharField(max_length=50)
     make: str = models.CharField(max_length=50, null=True, blank=True)
@@ -29,6 +29,6 @@ class Vehicle(models.Model):
 
 
 class Note(models.Model):
-    created_date: datetime = models.DateField(auto_now_add=True)
+    created_date: datetime = models.DateTimeField(auto_now_add=True)
 
     note: str = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)

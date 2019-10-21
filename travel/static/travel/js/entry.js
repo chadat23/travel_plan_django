@@ -103,14 +103,14 @@ $('[name="garmitigated"]').blur(function() {
 
 function autofill_contact_info(index) {
     $.ajax({
-        url: "/users/ajax-get-user-and-profile-by-username/",
+        url: "/users/ajax-get-user-contact-info/",
         data: {'username': $('[name="contactname' + index + '"]').val()},
         datatype: 'json',
         success: function (data) {
             $('[name="contactemail' + index + '"]').val(data.email);
-            $('[name="contactwork' + index + '"]').val(data.work_phone);
-            $('[name="contacthome' + index + '"]').val(data.home_phone);
-            $('[name="contactcell' + index + '"]').val(data.cell_phone);
+            $('[name="contactwork' + index + '"]').val(data.work_number);
+            $('[name="contacthome' + index + '"]').val(data.home_number);
+            $('[name="contactcell' + index + '"]').val(data.cell_number);
         }
     });
     return false;
@@ -145,7 +145,7 @@ $('[name="vehicleplate"]').blur(function() {
 
 function autofill_travelerunit_info(index) {
     $.ajax({
-        url: "/users/ajax-get-user-and-profile-by-username/",
+        url: "/travel/ajax-get-userunit-call-sign-and-gear/",
         data: {'username': $('[name="travelername' + index + '"]').val()},
         datatype: 'json',
         success: function (data) {

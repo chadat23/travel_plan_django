@@ -41,7 +41,7 @@ class KindEnum(models.Field):
 
 
 class Location(models.Model):
-    created_date: datetime = models.DateField(auto_now_add=True)
+    created_date: datetime = models.DateTimeField(auto_now_add=True)
     last_edited_date: datetime = models.DateField(auto_now=True)
 
     name: str = models.CharField(max_length=100)

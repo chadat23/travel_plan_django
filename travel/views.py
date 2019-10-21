@@ -6,7 +6,7 @@ from typing import Optional, List
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 
 from .models import Travel, TravelUserUnit, TravelDayPlan
@@ -59,6 +59,23 @@ def search(request: HttpRequest):
 
 def sent(request: HttpRequest):
     return render(request, 'travel/sent.html', {})
+
+
+def get_traveluserunit_call_sign_and_gear(request: HttpRequest):
+    if request.method == 'GET':
+        username = request.GET.get('username', '').strip()
+        traveluserunit: dict = TravelUserUnit.objects.filter(traveler__username=username)\
+            .order_by('-travel__start_date', '-created_date')\
+            .values('traveler__profile__call_sign', 'pack_color__name', 'tent_color__name', 'fly_color__name').first()
+
+        traveluserunit['call_sign'] = traveluserunit['traveler__profile__call_sign']
+        traveluserunit['pack_color'] = traveluserunit['pack_color__name']
+        traveluserunit['tent_color'] = traveluserunit['tent_color__name']
+        traveluserunit['fly_color'] = traveluserunit['fly_color__name']
+    else:
+        traveluserunit = {}
+
+    return JsonResponse(traveluserunit)
 
 
 def _fill_contacts(request: HttpRequest, context: dict) -> dict:

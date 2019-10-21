@@ -65,7 +65,7 @@ class Travel(models.Model):
 
 
 class TravelUserUnit(models.Model):
-    created_date: datetime = models.DateField(auto_now_add=True)
+    created_date: datetime = models.DateTimeField(auto_now_add=True)
 
     traveler: User = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     travel: Travel = models.ForeignKey(Travel, on_delete=models.CASCADE, null=True, blank=True)
@@ -96,7 +96,7 @@ class TravelUserUnit(models.Model):
 
 
 class TravelDayPlan(models.Model):
-    created_date: datetime = models.DateField(auto_now_add=True)
+    created_date: datetime = models.DateTimeField(auto_now_add=True)
 
     date: datetime = models.DateField(null=True, blank=True)
     starting_point: Location = models.ForeignKey(Location, on_delete=models.CASCADE,
@@ -119,7 +119,7 @@ class TravelDayPlan(models.Model):
 
 
 class TravelFile(models.Model):
-    created_date: datetime = models.DateField(auto_now_add=True)
+    created_date: datetime = models.DateTimeField(auto_now_add=True)
 
     file = models.FileField(null=True, blank=True, upload_to='travel_files')
     travel = models.ForeignKey(Travel, on_delete=models.CASCADE, null=True, blank=True)
