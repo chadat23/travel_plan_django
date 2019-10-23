@@ -33,19 +33,21 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'colors.apps.ColorsConfig',
-    'departments.apps.DepartmentsConfig',
-    'locations.apps.LocationConfig',
-    'travel.apps.TravelConfig',
-    'users.apps.UsersConfig',
-    'vehicles.apps.VehiclesConfig',
-    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 3rd party
+    'crispy_forms',
+    # custom
+    'colors.apps.ColorsConfig',
+    'departments.apps.DepartmentsConfig',
+    'locations.apps.LocationConfig',
+    'travel.apps.TravelConfig',
+    'users.apps.UsersConfig',
+    'vehicles.apps.VehiclesConfig',
 ]
 
 MIDDLEWARE = [

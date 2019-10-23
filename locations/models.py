@@ -26,7 +26,7 @@ class KindEnum(models.Field):
     BASIN = 'b'
     AREA = 'a'
     KIND_CHOICES = (
-        (PEAK, 'PEEK'),
+        (PEAK, 'PEAK'),
         (VALLEY, 'VALLEY'),
         (RIVER, 'RIVER'),
         (LAKE, 'LAKE'),
