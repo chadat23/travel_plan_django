@@ -22,6 +22,7 @@ from django.urls import path, include, reverse
 
 urlpatterns = [
     # path('/', reverse('travel-entry')),
+    path('', include('travel.urls')),
     path('admin/', admin.site.urls),
     path('locations/', include('locations.urls')),
     path('travel/', include('travel.urls')),

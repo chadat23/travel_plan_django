@@ -17,6 +17,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('', views.entry),
     path('ajax-get-userunit-call-sign-and-gear/', views.get_traveluserunit_call_sign_and_gear,
          name='ajax-traveluserunit-call-sign-and-gear'),
     path('entry/', views.entry, name='travel-entry'),
