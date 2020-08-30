@@ -68,10 +68,13 @@ def get_traveluserunit_call_sign_and_gear(request: HttpRequest):
             .order_by('-travel__start_date', '-created_date')\
             .values('traveler__profile__call_sign', 'pack_color__name', 'tent_color__name', 'fly_color__name').first()
 
-        traveluserunit['call_sign'] = traveluserunit['traveler__profile__call_sign']
-        traveluserunit['pack_color'] = traveluserunit['pack_color__name']
-        traveluserunit['tent_color'] = traveluserunit['tent_color__name']
-        traveluserunit['fly_color'] = traveluserunit['fly_color__name']
+        if traveluserunit:
+            traveluserunit['call_sign'] = traveluserunit['traveler__profile__call_sign']
+            traveluserunit['pack_color'] = traveluserunit['pack_color__name']
+            traveluserunit['tent_color'] = traveluserunit['tent_color__name']
+            traveluserunit['fly_color'] = traveluserunit['fly_color__name']
+        else:
+            traveluserunit = {}
     else:
         traveluserunit = {}
 
@@ -138,7 +141,7 @@ def _fill_travelers(request: HttpRequest, context: dict) -> dict:
             t['fitness'] = request.POST.get('fitness' + str(i), '')
             t['env'] = request.POST.get('env' + str(i), '')
             t['complexity'] = request.POST.get('complexity' + str(i), '')
-            t['total'] = request.POST.get('total' + str(1), '')
+            t['total'] = request.POST.get('total' + str(i), '')
         else:
             t['traveler_name'] = ''
             t['call_sign'] = ''
