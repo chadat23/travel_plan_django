@@ -1,18 +1,86 @@
 {% extends "travel/_base.html" %}
+{% load static %}
+
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'travel/css/entry.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'travel/css/search.css' %}"/>
+{% endblock additional_css %}
 
 {% block main_content %}
 
+  <div class="container">
+    <table>
+      <tr>
+        <th>Trip Leader <a href="#" id=tripleaderascending>&#9650</a> <a href="#" id=tripleaderdescending>&#9660</a></th>
+        <th>Start Date <a href="#" id=startdateascending>&#9650</a> <a href="#" id=startdatedescending>&#9660</a></th>
+        <th>Entry Point <a href="#" id=entrypointascending>&#9650</a> <a href="#" id=entrypointdescending>&#9660</a></th>
+        <th>End Date <a href="#" id=enddateascending>&#9650</a> <a href="#" id=enddatedescending>&#9660</a></th>
+        <th>Exit Point <a href="#" id=exitpointascending>&#9650</a> <a href="#" id=exitpointdescending>&#9660</a></th>
+        <th>Submitted <a href="#" id=submittedascending>&#9650</a> <a href="#" id=submitteddescending>&#9660</a></th>
+      </tr>
+      <datalist id="locations">
+        {% for location in locations %}
+        <option>{{ location }}</option>
+        {% endfor %}
+      </datalist>
+      <form action="/travel/search/">
+        <tr>
+          <td><input type="text" name="tripleader" placeholder="Trip Leader" class="text-input"
+            value="{{ trip_leader }}" /></td>
+          <td><input type="date" name="startdate" title="Entry Date" class="date-input"
+            value="{{ start_date }}" required/></td>
+          <td><input type="text" name="entrypoint" placeholder="Entry Location" class="text-input"
+            value="{{ entry_point }}" list="locations"/></td>
+          <td><input type="date" name="enddate" title="End Date" class="date-input"
+            value="{{ end_date }}" required/></td>
+          <td><input type="text" name="exitpoint" placeholder="Exit Location" class="text-input"
+            value="{{ exit_point }}" list="locations"/></td>
+          <td>
+            <input type="radio" name="submitted" id='submitted-yes' class="text-input" value="1" 
+            {% if submitted_yes %}checked{% else %}{% endif %}/>
+            Yes
+            <input type="radio" name="submitted" id='submitted-no' class="text-input" value="0" 
+            {% if submitted_no %}checked{% else %}{% endif %}/>
+            No
+          </td>
+          <td><input id="applyfilter" type="button" value="Apply"/><input id="clearfilter" type="button" value="Clear"/></td>
+        </tr>
+      </form>
     {% for travel in travels %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="#">{{ travel.trip_leader.username }}</a>
-              <small class="text-muted">{{ travel.created_date|date:"F d, Y" }}</small>
-            </div>
-            <h2><a class="article-title" href="#">{{ travel.plb }}</a></h2>
-            <p class="article-content">{{ travel.last_edited_date }}</p>
-          </div>
-        </article>
+      <tr>
+        <td>{{ travel.trip_leader.username }}</td>
+        <td>{{ travel.start_date|date:"F d, Y" }}</td>
+        <td>{{ travel.entry_point.name }}</td>
+        <td>{{ travel.end_date|date:"F d, Y" }}</td>
+        <td>{{ travel.exit_point.name }}</td>
+        <td>{% if travel.submitted %}Yes{% else %}{% endif %}</td>
+        <td><a href="/travel/entry/?id={{ travel.pk }}">Plan</a> - 
+            <a href="/travel/itinerary-map/?travel_id={{ travel.pk }}">Map</a></td>
+      </tr>
+    {% endfor %}
+    </table>
+  </div>
+
+  {% if travels.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1"><<</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ travels.previous_page_number }}"><</a>
+    {% endif %}
+
+    {% for num in travels.paginator.page_range %}
+        {% if travels.number == num %}
+            <a href="?page={{ num }}" class="btn btn-info mb-4">{{ num }}</a>
+        {% elif num > travels.number|add:'-3' and num < travels.number|add:'3' %}
+            <a href="?page={{ num }}" class="btn btn-outline-info mb-4">{{ num }}</a>
+        {% endif %}
     {% endfor %}
 
+    {% if travels.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ travels.next_page_number }}">></a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ travels.paginator.num_pages }}">>></a>
+    {% endif %}
+
 {% endblock main_content %}
+
+{% block additional_js %}
+<script src="{% static 'travel/js/search.js' %}"></script>
+{% endblock %}

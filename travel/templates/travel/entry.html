@@ -25,9 +25,18 @@
             For fields who's meanings aren't retaly apparent, hovering your curser over such fields will bring up an
             elaberating tip or hint.
         </li>
+        <li>
+            Clicking Save at the bottom of the page will save the itinerary without emailing anyone. Submit will save the 
+            itinerary and email the relevant contacts. Save should be used if the itinerary has not yet been finalized. Submit
+            should be used once it has been finilized. Also, if files are going to be uploaded, they need to be uploaded
+            when the form is submitted.
+        </li>
     </ul>
 </div>
 <div class="container">
+    {% if error %}
+        <div class="error-msg">{{ error }}</div>
+    {% endif %}
     <form action="" method="POST" enctype=multipart/form-data>
         {% csrf_token %}
         <div class="entry-section">
@@ -394,7 +403,11 @@
             <div class="error-msg">{{ error }}</div>
         {% endif %}
 
-        <button type="submit" class="btn btn-danger">Submit</button>
+        <button name="save" class="btn btn-success">Save</button>
+        <button name="submit" class="btn btn-danger">Submit</button>
+        {% if submitted %}
+        <span class="submitted">This has already been submitted!</span>
+        {% endif %}
     </form>
 </div>
 
@@ -404,4 +417,4 @@
 <script src="{% static 'travel/js/entry.js' %}"></script>
 {% endblock %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'travel/css/entry.css' %}"/>
+<!-- <link rel="stylesheet" type="text/css" href="{% static 'travel/css/entry.css' %}"/> -->

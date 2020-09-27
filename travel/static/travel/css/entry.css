@@ -65,6 +65,10 @@ body {
     transform: rotate(-60deg);
 }
 
+.submitted {
+    color: red;
+}
+
 input[type=”text”] {
     padding: 1px 1px;
 }

@@ -14,17 +14,17 @@ class Travel(models.Model):
     last_edited_date: datetime = models.DateField(auto_now=True)
 
     start_date: datetime = models.DateField(null=True, blank=True)
-    entry_point: Location = models.ForeignKey(Location, on_delete=models.CASCADE,
+    entry_point: Location = models.ForeignKey(Location, on_delete=models.DO_NOTHING,
                                               related_name='entry_point', null=True, blank=True)
     end_date: datetime = models.DateField(null=True, blank=True)
-    exit_point: Location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
+    exit_point: Location = models.ForeignKey(Location, on_delete=models.DO_NOTHING, null=True, blank=True)
 
     tracked: bool = models.BooleanField(null=True, blank=True)
     plb: str = models.CharField(max_length=20, null=True, blank=True)
 
-    trip_leader: User = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    trip_leader: User = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
 
-    vehicle: Vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE, null=True, blank=True)
+    vehicle: Vehicle = models.ForeignKey(Vehicle, on_delete=models.DO_NOTHING, null=True, blank=True)
     vehicle_location = models.CharField(max_length=50, null=True, blank=True)
 
     bivy_gear: bool = models.BooleanField(null=True, blank=True)
@@ -63,18 +63,20 @@ class Travel(models.Model):
     gar_mitigations: str = models.TextField(null=True, blank=True)
     notes: str = models.TextField(null=True, blank=True)
 
+    submitted: bool = models.BooleanField(null=True, blank=True, default=False)
+
 
 class TravelUserUnit(models.Model):
     created_date: datetime = models.DateTimeField(auto_now_add=True)
 
-    traveler: User = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    travel: Travel = models.ForeignKey(Travel, on_delete=models.CASCADE, null=True, blank=True)
+    traveler: User = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
+    travel: Travel = models.ForeignKey(Travel, on_delete=models.DO_NOTHING, null=True, blank=True)
 
-    pack_color: Color = models.ForeignKey(Color, on_delete=models.CASCADE,
+    pack_color: Color = models.ForeignKey(Color, on_delete=models.DO_NOTHING,
                                           related_name='pack_color', null=True, blank=True)
-    tent_color: Color = models.ForeignKey(Color, on_delete=models.CASCADE,
+    tent_color: Color = models.ForeignKey(Color, on_delete=models.DO_NOTHING,
                                           related_name='tent_color', null=True, blank=True)
-    fly_color: Color = models.ForeignKey(Color, on_delete=models.CASCADE,
+    fly_color: Color = models.ForeignKey(Color, on_delete=models.DO_NOTHING,
                                          related_name='fly_color', null=True, blank=True)
 
     supervision: int = models.IntegerField(null= True, blank=True)
@@ -99,14 +101,14 @@ class TravelDayPlan(models.Model):
     created_date: datetime = models.DateTimeField(auto_now_add=True)
 
     date: datetime = models.DateField(null=True, blank=True)
-    starting_point: Location = models.ForeignKey(Location, on_delete=models.CASCADE,
+    starting_point: Location = models.ForeignKey(Location, on_delete=models.DO_NOTHING,
                                                  related_name='starting_point', null=True, blank=True)
-    ending_point: Location = models.ForeignKey(Location, on_delete=models.CASCADE,
+    ending_point: Location = models.ForeignKey(Location, on_delete=models.DO_NOTHING,
                                                related_name='ending_point', null=True, blank=True)
     route: str = models.CharField(max_length=255, null=True, blank=True)
     mode: str = models.CharField(max_length=50, null=True, blank=True)
 
-    travel: Travel = models.ForeignKey(Travel, on_delete=models.CASCADE, null=True, blank=True)
+    travel: Travel = models.ForeignKey(Travel, on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __lt__(self, other):
         return self.date < other.date
@@ -115,14 +117,14 @@ class TravelDayPlan(models.Model):
         return f'{str(self.date)} {self.starting_point} {self.ending_point} {self.route} {self.mode}'
 
     def __str__(self):
-        return f'{str(self.date)} {self.starting_point} {self.ending_point} {self.route} {self.mode}'
+        return f'{str(self.date)} {self.starting_point} {self.ending_point} {self.route} {self.mode} {self.travel.id}'
 
 
 class TravelFile(models.Model):
     created_date: datetime = models.DateTimeField(auto_now_add=True)
 
     file = models.FileField(null=True, blank=True, upload_to='travel_files')
-    travel = models.ForeignKey(Travel, on_delete=models.CASCADE, null=True, blank=True)
+    travel = models.ForeignKey(Travel, on_delete=models.DO_NOTHING, null=True, blank=True)
 
     def __str__(self):
         return self.file.name

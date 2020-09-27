@@ -15,6 +15,7 @@ class KindEnum(models.Field):
         return "enum(%s)" % ','.join("'%s'" % k for (k, _) in self.choices)
 
     PEAK = 'p'
+    PASS = 'ps'
     VALLEY = 'v'
     RIVER = 'rvr'
     LAKE = 'lk'
@@ -27,6 +28,7 @@ class KindEnum(models.Field):
     AREA = 'a'
     KIND_CHOICES = (
         (PEAK, 'PEAK'),
+        (PASS, 'PASS'),
         (VALLEY, 'VALLEY'),
         (RIVER, 'RIVER'),
         (LAKE, 'LAKE'),

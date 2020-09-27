@@ -1,0 +1,38 @@
+{% extends "travel/_base.html" %}
+{% load static %}
+
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'travel/css/map.css' %}"/>
+{% endblock additional_css %}
+
+{% block main_content %}
+  <div class="containerr">
+    <div class="col-sm-12">
+      <form action="" method="POST" enctype=multipart/form-data>
+        {% csrf_token %}
+        <input type="checkbox" name="exactdate" id="exactdate" 
+          {% if exact_date %}checked{% else %}{% endif %}>
+          <label for="exactdate" class="form-check-label">Exact Date</label>
+        <input type="checkbox" name="onlysubmitted" id="onlysubmitted" 
+          {% if only_submitted %}checked{% else %}{% endif %}>
+          <label for="onlysubmitted" class="form-check-label">Only Submitted Itinerarys</label>
+        <input type="date" name="startdate" title="Start Date" class="col-xl-3 date-input"
+          value="{{ start_date|date:'Y-m-d' }}" required/>
+        <input type="date" name="enddate" title="End Date" class="col-xl-3 date-input"
+          value="{{ end_date|date:'Y-m-d' }}" required/>
+        <button type="submit" class="btn btn-danger">Submit</button>
+      </form>
+    </div>
+    <div class="row">
+      <div class="col-md-10">
+        {{map|safe}}
+      </div>
+      <div class="col-md-2 key">
+        {% for label, color in key %}
+          <p style="color: {{ color }};">{{ label }}</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  
+{% endblock main_content %}
