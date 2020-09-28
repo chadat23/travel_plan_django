@@ -104,7 +104,7 @@ $('[name="garmitigated"]').blur(function() {
 function autofill_contact_info(index) {
     $.ajax({
         url: "/users/ajax-get-user-contact-info/",
-        data: {'username': $('[name="contactname' + index + '"]').val()},
+        data: {'name': $('[name="contactname' + index + '"]').val()},
         datatype: 'json',
         success: function (data) {
             $('[name="contactemail' + index + '"]').val(data.email);
@@ -146,7 +146,7 @@ $('[name="vehicleplate"]').blur(function() {
 function autofill_travelerunit_info(index) {
     $.ajax({
         url: "/travel/ajax-get-userunit-call-sign-and-gear/",
-        data: {'username': $('[name="travelername' + index + '"]').val()},
+        data: {'name': $('[name="travelername' + index + '"]').val()},
         datatype: 'json',
         success: function (data) {
             $('[name="callsign' + index + '"]').val(data.call_sign);

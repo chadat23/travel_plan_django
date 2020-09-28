@@ -77,7 +77,7 @@ def _generate_pdf(travel: Travel) -> PDF:
 
     # find the trip leader TravelUserUnit that's the trip leader and separate it from the other travelers
     for unit in travel.traveluserunit_set.all():
-        if unit.traveler.username == travel.trip_leader.username:
+        if unit.traveler.profile.name == travel.trip_leader.profile.name:
             leader_unit = unit
             other_units = list(travel.traveluserunit_set.all())
             other_units.remove(leader_unit)
@@ -201,7 +201,7 @@ def _generate_pdf(travel: Travel) -> PDF:
     pdf.add_cell(37, 'Cell Phone #:', 'L', 1, 1, 'C')
 
     for c in travel.contacts.all():
-        pdf.add_cell(41, c.username, 'V', 1, 0, 'L')
+        pdf.add_cell(41, c.profile.name, 'V', 1, 0, 'L')
         pdf.add_cell(37, c.email, 'V', 1, 0, 'L')
         pdf.add_cell(37, c.profile.work_number, 'V', 1, 0, 'L')
         pdf.add_cell(37, c.profile.home_number, 'V', 1, 0, 'L')
@@ -287,7 +287,7 @@ def _write_traveler(pdf: PDF, unit):
     :return: None
     """
     if unit.traveler:
-        pdf.add_cell(49, unit.traveler.username, 'V', 1, 0, 'L')
+        pdf.add_cell(49, unit.traveler.profile.name, 'V', 1, 0, 'L')
     else:
         pdf.add_cell(49, '', 'V', 1, 0, 'L')
     if unit.traveler.profile.call_sign:

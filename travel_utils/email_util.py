@@ -76,7 +76,7 @@ def _make_subject(travel: Travel) -> str:
         if travel_unit.traveler.profile.call_sign:
             subject += travel_unit.traveler.profile.call_sign + ', '
         else:
-            subject += travel_unit.traveler.username + ', '
+            subject += travel_unit.traveler.profile.name + ', '
 
     return subject[:-2]
 
@@ -93,9 +93,9 @@ def _make_body(travel: Travel) -> str:
     body = "Here's the travel itinerary for "
     for travel_unit in travel.traveluserunit_set.all():
         if travel_unit.traveler.profile.call_sign:
-            body += f"{travel_unit.traveler.username} ({travel_unit.traveler.profile.call_sign}), "
+            body += f"{travel_unit.traveler.profile.name} ({travel_unit.traveler.profile.call_sign}), "
         else:
-            body += f"{travel_unit.traveler.username}, "
+            body += f"{travel_unit.traveler.profile.name}, "
 
     body = body[:-2] + '.'
 

@@ -93,7 +93,7 @@ class TravelUserUnit(models.Model):
                 + self.team_selection + self.fitness + self.env + self.complexity)
 
     def __str__(self):
-        return f'{self.created_date.strftime("%Y-%m-%d")} {self.traveler.username}, ' \
+        return f'{self.created_date.strftime("%Y-%m-%d")} {self.traveler.profile.name}, ' \
                f'{self.travel.entry_point.name} - {self.travel.entry_point.name}'
 
 

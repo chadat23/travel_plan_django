@@ -37,7 +37,7 @@ def entry(request: HttpRequest):
         'title': 'Travel Plan Entry',
         'colors': Color.objects.order_by('name').values_list('name', flat=True),
         'locations': Location.objects.order_by('name').values_list('name', flat=True),
-        'usernames': User.objects.order_by('-username').filter(profile__active=True).values_list('username', flat=True),
+        'names': User.objects.order_by('-profile__name').filter(profile__active=True).values_list('profile__name', flat=True),
         'vehicles': [str(v) for v in Vehicle.objects.order_by('plate').filter(active=True).all()],
         'error': '',
     }
@@ -76,7 +76,7 @@ def search(request: HttpRequest):
     order_by = '-start_date'
     order = ''
     if 'tripleaderorder' in request.GET:
-        order_by = 'trip_leader__username'
+        order_by = 'trip_leader__profile__name'
         order = request.GET.get('tripleaderorder')
     if 'startdateorder' in request.GET:
         order_by = 'start_date'
@@ -107,7 +107,7 @@ def search(request: HttpRequest):
     print('context', context['submitted'])
 
     if context['trip_leader']:
-        travels = travels.filter(trip_leader__username__iexact=context['trip_leader'])
+        travels = travels.filter(trip_leader__profile__name__iexact=context['trip_leader'])
     if context['entry_point']:
         travels = travels.filter(entry_point__name__iexact=context['entry_point'])
     if context['start_date']:
@@ -264,7 +264,6 @@ def itinerary_map(request: HttpRequest):
                    tiles='Stamen Terrain')
 
     travel_id = request.GET.get('travel_id')
-    print(travel_id)
 
     travel = Travel.objects.get(pk=travel_id)
     first_travel_day = travel.start_date
@@ -272,7 +271,7 @@ def itinerary_map(request: HttpRequest):
     m, _, key_labels, key_colors = _map_travel(travel, m, first_travel_day, last_travel_day)
     folium.PolyLine(YOSEMITE_MAP, 
                     color='blue', 
-                    popup=_popup(travel.trip_leader.username, travel.id)
+                    popup=_popup(travel.trip_leader.profile.name, travel.id)
                     ).add_to(m)
 
     context = {'map': m._repr_html_(), 'key': zip(key_labels, key_colors)}
@@ -329,11 +328,12 @@ def _map_travel(travel: Travel, m: folium.Map, first_travel_day, last_travel_day
 
 def get_traveluserunit_call_sign_and_gear(request: HttpRequest):
     if request.method == 'GET':
-        username = request.GET.get('username', '').strip()
-        traveluserunit: dict = TravelUserUnit.objects.filter(traveler__username=username)\
+        name = request.GET.get('name', '').strip()
+        
+        traveluserunit: dict = TravelUserUnit.objects.filter(traveler__profile__name=name)\
             .order_by('-travel__start_date', '-created_date')\
             .values('traveler__profile__call_sign', 'pack_color__name', 'tent_color__name', 'fly_color__name').first()
-
+        print(TravelUserUnit.objects.filter(traveler__profile__name=name).all())
         if traveluserunit:
             traveluserunit['call_sign'] = traveluserunit['traveler__profile__call_sign']
             traveluserunit['pack_color'] = traveluserunit['pack_color__name']
@@ -361,7 +361,7 @@ def _fill_contacts(request: HttpRequest, context: dict, travel = None) -> dict:
             if 'id' in request.GET and i < len(travel.contacts.all()):
                 if i == 0:
                     contacts = travel.contacts.all()
-                rp['contact_name'] = contacts[i].username
+                rp['contact_name'] = contacts[i].profile.name
                 rp['contact_email'] = contacts[i].email
                 rp['contact_work'] = contacts[i].profile.work_number
                 rp['contact_home'] = contacts[i].profile.home_number
@@ -435,7 +435,7 @@ def _fill_travelers(request: HttpRequest, context: dict, travel: Travel = None) 
                     travelers = travel.traveluserunit_set.all().exclude(traveler__id=trip_leader_id)
                 else:
                     traveluserunit = travelers[i - 1]
-                t['traveler_name'] = traveluserunit.traveler.username
+                t['traveler_name'] = traveluserunit.traveler.profile.name
                 t['call_sign'] = traveluserunit.traveler.profile.call_sign
                 t['pack_color'] = traveluserunit.pack_color.name if traveluserunit.pack_color else ''
                 t['tent_color'] = traveluserunit.tent_color.name if traveluserunit.tent_color else ''
@@ -652,7 +652,7 @@ def _fill_context(request: HttpRequest, context, travel = None) -> dict:
 
 
 def _save_data(context: dict):
-    if context['id']:
+    if 'id' in context:
         travel = Travel.objects.get(pk=context['id'])
     else:
         travel = Travel()
@@ -662,8 +662,8 @@ def _save_data(context: dict):
     travel.exit_point = Location.objects.filter(name=context.get('exit_point')).first()
     travel.tracked = context.get('tracked')
     travel.plb = context.get('plb')
-
-    user = user_services.add_if_not_present(username=context.get('travelers')[0]['traveler_name'])
+    print(context.get('travelers')[0]['traveler_name'])
+    user = user_services.add_if_not_present(name=context.get('travelers')[0]['traveler_name'])
     
     travel.trip_leader = User.objects.filter(username=user.username).first()
 
@@ -714,7 +714,7 @@ def _save_data(context: dict):
         if not t.get('traveler_name'):
             break
         # user = user_services.add_if_not_present(username=t.get('traveler_name'))
-        user, created = User.objects.get_or_create(username=t.get('traveler_name').strip())
+        user, created = User.objects.get_or_create(username=t.get('traveler_name').strip().replace(' ', '_'))
         user_services.save_profile(user, t.get('call_sign'), None, None, None, None, None)        
 
         travel_user_unit = TravelUserUnit.objects.filter(travel=travel, traveler=user).first()
@@ -749,9 +749,9 @@ def _save_data(context: dict):
 
     # Remove travelers who have been removed from the itinerary when edited
     traveler_names = [t.get('traveler_name') for t in context['travelers']]
-    for traveler_name in TravelUserUnit.objects.filter(travel=travel).values_list('traveler__username', flat=True):
+    for traveler_name in TravelUserUnit.objects.filter(travel=travel).values_list('traveler__profile__name', flat=True):
         if traveler_name not in traveler_names:
-            travel_user_unit = TravelUserUnit.objects.filter(travel=travel, traveler__username=traveler_name)
+            travel_user_unit = TravelUserUnit.objects.filter(travel=travel, traveler__profile__name=traveler_name)
             travel_user_unit.delete()
 
 
@@ -785,7 +785,7 @@ def _save_data(context: dict):
     travel.save()
 
     travel = Travel.objects.get(id=travel.id)
-    base_name = file_utils.generate_name(travel.trip_leader.username, travel.start_date.strftime('%Y%m%d'))
+    base_name = file_utils.generate_name(travel.trip_leader.profile.name, travel.start_date.strftime('%Y%m%d'))
     path = os.path.join(settings.MEDIA_ROOT, 'travel_files')
     files = [base_name + '.pdf']
     pdf_util.make_and_save_pdf(travel, base_name, path)

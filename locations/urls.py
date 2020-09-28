@@ -17,5 +17,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('propose/', views.propose, name='location-propose'),
+    path('propose/', views.propose, name='locations-propose'),
+    path('all-points-map/', views.all_points_map, name='locations-all-points-map'),
 ]

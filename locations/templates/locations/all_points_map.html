@@ -1,0 +1,17 @@
+{% extends "travel/_base.html" %}
+{% load static %}
+
+{% block additional_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'travel/css/map.css' %}"/>
+{% endblock additional_css %}
+
+{% block main_content %}
+  <div class="containerr">
+    <div class="row">
+      <div class="col-md-10">
+        {{map|safe}}
+      </div>
+    </div>
+  </div>
+  
+{% endblock main_content %}

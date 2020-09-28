@@ -8,8 +8,8 @@ from users.models import Profile
 
 def get_user_contact_info(request: HttpRequest):
     if request.method == 'GET':
-        username = request.GET.get('username', '').strip()
-        user: dict = Profile.objects.filter(user__username=username)\
+        name = request.GET.get('name', '').strip()
+        user: dict = Profile.objects.filter(name=name)\
             .values('user__email', 'work_number', 'home_number', 'cell_number').first()
 
         if user:

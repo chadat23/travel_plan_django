@@ -84,9 +84,9 @@
                 Traveler Info
             </h5>
             <div class="row">
-                <datalist id="usernames">
-                    {% for user in usernames %}
-                    <option>{{ user }}</option>
+                <datalist id="names">
+                    {% for name in names %}
+                    <option>{{ name }}</option>
                     {% endfor %}
                 </datalist>
                 <datalist id="colors">
@@ -97,7 +97,7 @@
                 {% for t in travelers %}
 {#                  TODO: assumes that the trip leader is first #}
                     <input type="text" name="travelername{{ forloop.counter0 }}" placeholder="{% if forloop.first %}Trip Leader{% else %}Name{% endif %}" class="col-xl-4"
-                           value="{{ t.traveler_name }}" list="usernames" {% if forloop.first %}required{% endif %}/>
+                           value="{{ t.traveler_name }}" list="names" {% if forloop.first %}required{% endif %}/>
                     <input type="text" name="callsign{{ forloop.counter0 }}" placeholder="Call Sign" class="col-xl-2"
                            value="{{ t.call_sign }}"/>
                     <input type="text" name="packcolor{{ forloop.counter0 }}" placeholder="Pack Color" class="col-xl-2"
@@ -293,15 +293,15 @@
                         </li>
                     </ul>
             </div>
-            <datalist id="usernames">
+            <!-- <datalist id="usernames">
                 {% for user in usernames %}
                 <option>{{ user }}</option>
                 {% endfor %}
-            </datalist>
+            </datalist> -->
             {% for c in contacts %}
             <div class="row">
                 <input type="text" name="contactname{{ forloop.counter0 }}" placeholder="Responsible Party Name {{ forloop.counter }}"
-                       class="col-xl-3" value="{{ c.contact_name }}" list="usernames"/>
+                       class="col-xl-3" value="{{ c.contact_name }}" list="names"/>
                 <input type="text" name="contactemail{{ forloop.counter0 }}" placeholder="Email"
                        class="col-xl-3" value="{{ c.contact_email }}"/>
                 <input type="text" name="contactwork{{ forloop.counter0 }}" placeholder="Work Phone" 

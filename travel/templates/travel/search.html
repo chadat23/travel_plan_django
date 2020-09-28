@@ -48,7 +48,7 @@
       </form>
     {% for travel in travels %}
       <tr>
-        <td>{{ travel.trip_leader.username }}</td>
+        <td>{{ travel.trip_leader.profile.name }}</td>
         <td>{{ travel.start_date|date:"F d, Y" }}</td>
         <td>{{ travel.entry_point.name }}</td>
         <td>{{ travel.end_date|date:"F d, Y" }}</td>

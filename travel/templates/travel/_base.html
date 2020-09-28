@@ -24,38 +24,11 @@
 </head>
 
 <body>
-{#    <header class="site-header">#}
-{#        <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">#}
-{#            <div class="container">#}
-{#                <a class="navbar-brand mr-4" href="/">Django Blog</a>#}
-{#                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"#}
-{#                        aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">#}
-{#                    <span class="navbar-toggler-icon"></span>#}
-{#                </button>#}
-{#                <div class="collapse navbar-collapse" id="navbarToggle">#}
-{#                    <div class="navbar-nav mr-auto">#}
-{#                        <a class="nav-item nav-link" href="/travel/entry/">Travel Entry</a>#}
-{#                        <a class="nav-item nav-link" href="/travel/search">Travel Search</a>#}
-{#                    </div>#}
-{#                    <!-- Navbar Right Side -->#}
-{#                    <div class="navbar-nav">#}
-{#                        <a class="nav-item nav-link" href="#">Login</a>#}
-{#                        <a class="nav-item nav-link" href="#">Register</a>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{#        </nav>#}
-{#    </header>#}
 <nav>
     <a href="{% url 'travel-entry' %}">Plan Entry</a>
     <a href="{% url 'travel-search' %}">Plan Search</a>
     <a href="{% url 'travel-date-range-itineraries-map' %}">Itinerary Map</a>
-    <!--<a href="/plan-search">Plan Search</a>-->
-    <!--<a href="/map/all-locations">All Locations</a>-->
-{#    <a href="/map/all-locations">All Locations</a>#}
-{#    <a href="/map/traveled-locations">Traveled Locations</a>#}
-{#    <a href="/locations/propose-locations">Propose Location</a>#}
-{#    <a href="/locations/assess-locations">Assess Locations</a>#}
+    <a href="{% url 'locations-all-points-map' %}">All Points Map</a>
 </nav>
 <div class="main_content">
     {% block main_content %}{% endblock %}
