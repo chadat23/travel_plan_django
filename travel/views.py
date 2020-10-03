@@ -194,7 +194,7 @@ def date_range_itineraries_map(request: HttpRequest):
 
         for day in days:
             call_sign = day.travel.trip_leader.profile.call_sign
-            name = day.travel.trip_leader
+            name = day.travel.trip_leader.profile.name
             color_seed += 1
             line_color = _set_line_color(color_seed)
             
@@ -282,7 +282,7 @@ def itinerary_map(request: HttpRequest):
 def _map_travel(travel: Travel, m: folium.Map, first_travel_day, last_travel_day, color_seed: int = 0, key_labels=[], key_colors=[]):
 
     call_sign = travel.trip_leader.profile.call_sign
-    name = travel.trip_leader
+    name = travel.trip_leader.profile.name
     date = travel.start_date
     color = _set_color(first_travel_day, last_travel_day, date)
     color_seed += 1
